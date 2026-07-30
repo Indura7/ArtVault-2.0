@@ -41,7 +41,6 @@ export function Navbar() {
           <span className="text-xl">ArtVault</span>
         </Link>
 
-        {/* 🗺️ Horizontal Links Array */}
         <ul className="hidden lg:flex items-center gap-16 text-sm">
           <li><Link href="/" className={`pb-1 ${isActive("/")}`}>Home</Link></li>
           <li><Link href="/artworks" className={`pb-1 ${isActive("/artworks")}`}>Browse Art</Link></li>
@@ -50,7 +49,7 @@ export function Navbar() {
           <li><Link href="/about" className={`pb-1 ${isActive("/about")}`}>About Us</Link></li>
         </ul>
 
-        {/* 🔐 Dynamic Auth Controls */}
+        {}
         <div className="flex items-center gap-3">
           {isLoggedIn ? (
             <div className="flex items-center gap-3">
@@ -64,14 +63,12 @@ export function Navbar() {
             </div>
           ) : (
             <>
-              {/* Login Button with matching purple border outline */}
               <Link 
                 href="/login" 
                 className="text-sm font-bold uppercase border-2 border-purple-500 text-purple-600 hover:bg-purple-50 px-6 py-2 rounded-full transition-all tracking-wider"
               >
                 Login
               </Link>
-              {/* Register Button with matching solid purple/blue tint look */}
               <Link 
                 href="/register" 
                 className="text-sm font-bold uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 px-6 py-2 rounded-full shadow-md transition-all tracking-wider"

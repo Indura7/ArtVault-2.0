@@ -17,7 +17,6 @@ export default function BrowseArtPage() {
 
   useEffect(() => {
     async function getArtworks() {
-      // 📡 This is the actual live connection test query!
       const { data, error } = await supabase
         .from('artwork')
         .select('art_id, title, type, price');
