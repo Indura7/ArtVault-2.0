@@ -8,7 +8,10 @@ interface ArtworkProps {
     type: string;        // e.g., "DIGITAL" or "PHYSICAL"
     image_path: string;  // Public URL from Supabase Storage
     price: number;
-    artist_name?: string; // Fetched via JOIN from artist table
+    artist:{
+        first_name:string;
+        last_name:string;
+    }; 
   };
 }
 
@@ -40,7 +43,9 @@ export default function ArtworkCard({ artwork }: ArtworkProps) {
         {/* Artist Name with Icon */}
         <div className="flex items-center gap-1 text-sm text-gray-600">
           <User size={16} className="text-gray-500" />
-          <span>{artwork.artist_name || "Artist name"}</span>
+        <span>
+            {artwork.artist?.first_name} {artwork.artist?.last_name} 
+        </span>
         </div>
 
         {/* Price */}

@@ -6,9 +6,9 @@ import ArtworkCard from "@/components/modules/artworks/artworkcard";
 export default async function ArtworksPage() {
   // 1. Fetch data from Supabase database table
   const { data: artworks, error } = await supabase
-    .from("artwork")
-    .select("*");
-
+.from("artwork")
+    .select(`*,
+      artist(first_name,last_name)`);
   if (error) {
     console.error("Error fetching artworks:", error);
   }
