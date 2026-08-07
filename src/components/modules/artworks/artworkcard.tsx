@@ -14,7 +14,7 @@ interface ArtworkProps {
 
 export default function ArtworkCard({ artwork }: ArtworkProps) {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
+    <div className="bg-white rounded-lg border border-gray-400 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
       {/* Artwork Image */}
       <div className="relative w-full h-64 bg-gray-100">
         <Image
@@ -40,12 +40,12 @@ export default function ArtworkCard({ artwork }: ArtworkProps) {
         {/* Artist Name with Icon */}
         <div className="flex items-center gap-1 text-sm text-gray-600">
           <User size={16} className="text-gray-500" />
-          <span>{artwork.artist_name || "Artist Name"}</span>
+          <span>{artwork.artist_name || "Artist name"}</span>
         </div>
 
         {/* Price */}
         <p className="text-sm font-medium text-blue-600">
-          ${artwork.price.toFixed(2)}
+          {artwork.price.toFixed(2)} LKR
         </p>
       </div>
     </div>
