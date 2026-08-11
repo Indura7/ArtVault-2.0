@@ -17,12 +17,16 @@ interface ArtworkProps {
 
 export default function ArtworkCard({ artwork }: ArtworkProps) {
   return (
-    <div className="bg-white rounded-lg border border-gray-400 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
+    <div className="card bg-white rounded-lg border border-gray-400 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
       {/* Artwork Image */}
       <div /* className="relative w-full h-64 bg-gray-100" */>
-        <img
+        <Image
           src={artwork.image_path}
           alt={artwork.title}
+          width={800}
+          height={1200}
+          sizes="50vw"
+          quality={10}
           className="w-full h-auto block rounded-t-lg"
         />
       </div>
