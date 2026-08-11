@@ -9,7 +9,8 @@ export function Navbar() {
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  const isActive = (path: string) => 
+  const isActive = (path: string) =>
+    
     pathname === path 
       ? "text-purple-600 font-bold border-b-2 border-purple-600" 
       : "text-slate-600 hover:text-purple-600 font-medium transition-all";
@@ -43,7 +44,7 @@ export function Navbar() {
 
         <ul className="hidden lg:flex items-center gap-16 text-sm">
           <li><Link href="/" className={`pb-1 ${isActive("/")}`}>Home</Link></li>
-          <li><Link href="/artworks" className={`pb-1 ${isActive("/artworks")}`}>Browse Art</Link></li>
+          <li><Link href="/artworks" className={`pb-1 ${isActive("/artworks")}`}> Browse Art</Link></li>
           <li><Link href="/workshops" className={`pb-1 ${isActive("/workshops")}`}>Workshops</Link></li>
           <li><Link href="/artist" className={`pb-1 ${isActive("/artist")}`}>Artists</Link></li>
           <li><Link href="/about" className={`pb-1 ${isActive("/about")}`}>About Us</Link></li>

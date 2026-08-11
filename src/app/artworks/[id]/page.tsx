@@ -40,7 +40,7 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
           />
         </div>
 
-        {/* Right Column: Title, Artist, Price & Actions */}
+
         <div className="flex flex-col justify-start gap-6">
           <div>
             <br />
@@ -67,7 +67,7 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Description Section */}
+
       <div className="border-t pt-6">
         <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Description</h3>
         <p className="text-gray-700">
