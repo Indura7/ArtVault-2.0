@@ -1,6 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import zoom from "@/components/modules/artworks/zoom";
+import Zoom from "@/components/modules/artworks/zoom";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -29,13 +31,19 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         
         <div >
-          <Image
-            src={artwork.image_path}
+          <Zoom
+          src={artwork.image_path}
+          alt={artwork.title}
+          width={800}
+          height={1200}
+        />
+      {/*     <Image
+            src={artwork.image_path} 
             alt={artwork.title}
             width={800}
             height={1200}
             className="w-full h-auto block rounded-t-lg"
-          />
+          /> */}
         </div>
 
 
