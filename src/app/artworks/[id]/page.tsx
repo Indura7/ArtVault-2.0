@@ -11,12 +11,10 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
 
   const { data: artwork, error } = await supabase
     .from("artwork")
-    .select(`
-      *,
+    .select(`*,
       artist (
         first_name,
-        last_name
-      )
+        last_name)
     `)
     .eq("art_id", id)
     .single();
@@ -30,13 +28,11 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
     <div className="container mx-auto p-5 max-w-5xl space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         
-        <div className="relative w-full h-[600px] bg-gray-100 rounded-lg overflow-hidden border">
-          <Image
+        <div >
+          <img
             src={artwork.image_path}
             alt={artwork.title}
-            fill
-            className="object-cover"
-            priority
+            className="w-full h-auto block rounded-t-lg"
           />
         </div>
 
