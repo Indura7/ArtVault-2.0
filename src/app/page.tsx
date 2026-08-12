@@ -76,7 +76,7 @@ export default async function Home() {
               >
                 <div className="relative h-64 bg-gray-100">
                   <img 
-                    src={art.image_url || art.image || art.photo || "https://images.unsplash.com/photo-1541701494587-cb58502866ab"} 
+                    src={art.image_path || art.image || art.photo || "https://images.unsplash.com/photo-1541701494587-cb58502866ab"} 
                     alt={art.title || "Artwork"} 
                     className="w-full h-full object-cover" 
                   />
