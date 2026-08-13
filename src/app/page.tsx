@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Heart, Calendar, User, Bell } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import Link from 'next/link';
 
 export default async function Home() {
   // Fetch live data from artwork, artist, and workshop tables
@@ -36,33 +37,45 @@ export default async function Home() {
       </div>
 
       {/* HERO SECTION */}
-      <section className="relative bg-gradient-to-b from-purple-100 via-purple-50/50 to-white py-20 px-6 text-center overflow-hidden">
-        <div className="max-w-3xl mx-auto z-10 relative">
-          <span className="text-xs font-semibold tracking-widest text-indigo-500 uppercase">
-            Discover Beautiful Art
-          </span>
-          <h1 className="text-5xl font-serif text-gray-900 mt-2">
-            Art That <span className="text-pink-500 italic">Inspires You</span>
-          </h1>
-          <p className="mt-4 text-gray-600 max-w-xl mx-auto text-sm leading-relaxed">
-            Explore original artworks, connect with talented artists, and join exciting workshops in a secure, curated digital gallery experience.
-          </p>
-          <div className="mt-8 flex justify-center gap-4">
-            <button className="px-6 py-3 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition">
-              EXPLORE GALLERY
-            </button>
-            <button className="px-6 py-3 border border-gray-300 bg-white/80 text-gray-700 text-xs font-semibold tracking-wider rounded-md hover:bg-white transition">
-              View Workshops
-            </button>
-          </div>
-        </div>
-      </section>
+      <section className="relative py-20 px-6 text-center overflow-hidden">
+  {/* Background Image Layer */}
+  <div 
+    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+    style={{ backgroundImage: "url('/assets/images/home_bg.png')" }}
+  />
+
+  {/* Overlay (Adjust opacity or color like bg-black/40 or bg-purple-900/30 for contrast) */}
+ 
+
+  {/* Content Layer */}
+  <div className="max-w-3xl mx-auto z-10 relative">
+    <span className="text-xs font-semibold tracking-widest text-indigo-600 uppercase">
+      Discover Beautiful Art
+    </span>
+    <h1 className="text-5xl font-serif text-gray-900 mt-2">
+      Art That <span className="text-pink-500 italic">Inspires You</span>
+    </h1>
+    <p className="mt-4 text-gray-700 max-w-xl mx-auto text-sm leading-relaxed">
+      Explore original artworks, connect with talented artists, and join exciting workshops in a secure, curated digital gallery experience.
+    </p>
+    <div className="mt-8 flex justify-center gap-4">
+     <Link href="/artworks" className="inline-block">
+  <button className="px-6 py-3 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition shadow-md">
+    EXPLORE GALLERY
+  </button>
+</Link>
+      <button className="px-6 py-3 border border-gray-300 bg-white/90 text-gray-700 text-xs font-semibold tracking-wider rounded-md hover:bg-white transition shadow-sm">
+        View Workshops
+      </button>
+    </div>
+  </div>
+</section>
 
       {/* 1. FEATURED ARTWORKS FROM DATABASE */}
       <section className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-serif font-bold text-gray-900">Featured Artworks</h2>
-          <a href="#" className="text-xs font-semibold text-blue-500 hover:underline">
+          <a href="/artworks" className="text-xs font-semibold text-blue-500 hover:underline">
             View All Arts ({dbArtworks?.length || 0})
           </a>
         </div>
