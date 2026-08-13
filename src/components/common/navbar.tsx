@@ -64,13 +64,13 @@ export function Navbar() {
           ) : (
             <>
               <Link 
-                href="/login" 
+                href="/auth/login" 
                 className="text-sm font-bold uppercase border-2 border-purple-500 text-purple-600 hover:bg-purple-50 px-6 py-2 rounded-full transition-all tracking-wider"
               >
                 Login
               </Link>
               <Link 
-                href="/register" 
+                href="/auth/register" 
                 className="text-sm font-bold uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 px-6 py-2 rounded-full shadow-md transition-all tracking-wider"
               >
                 Register
