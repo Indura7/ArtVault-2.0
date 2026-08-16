@@ -21,7 +21,7 @@ export default async function ArtworksPage() {
       
       
 
-      <div className="columns-1  sm:columns-2 lg:columns-3 gap-6 ">  
+      <div className="columns-1  sm:columns-2 lg:columns-4 gap-6 ">  
         {/* 1 columns in mobiles ,2 colums in tablets and 3 colums in desktops */}
 
         {artworks?.map((item) => (

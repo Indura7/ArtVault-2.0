@@ -56,6 +56,9 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
                 ? `${artwork.artist.first_name} ${artwork.artist.last_name}`
                 : "Unknown Artist"}
             </p>
+            <p className="text-gray-600 mt-1">
+              added on : {artwork.date_added.split("-")[1]}  {artwork.date_added.split("-")[0]} 
+            </p>
             <span className="inline-block mt-2 px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full uppercase">
               {artwork.type }
             </span>

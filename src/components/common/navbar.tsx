@@ -18,7 +18,7 @@ export function Navbar() {
   return (
     
     <nav 
-      className="w-full border-b border-slate-100 sticky top-0 z-50 px-6 py-7 bg-cover bg-right bg-no-repeat bg-white"
+      className="w-full border-b border-slate-100 sticky top-0 z-50 px-6 py-3 bg-cover bg-right bg-no-repeat bg-white"
       style={{ backgroundImage: "url('/assets/images/topnav-bg.png')" }} 
     >
       
