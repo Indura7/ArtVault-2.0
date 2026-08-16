@@ -30,6 +30,7 @@ body {
     display: inline-block;
     transition: transform 0.2s ease;
     transform-origin: left;
+    color: blue;
     
   }
   .hover-scale-text:hover {

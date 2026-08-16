@@ -55,7 +55,7 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
             <h1 className="text-3xl font-bold py-5">{artwork.title}</h1>
 
               <Link href={`/artists/${artwork.artist_id}`} className="text-blue-500 ">
-                <p className="text-gray-600 mt-1">
+                <p className="text-gray-600 mt-1 ">
                   <span>By  </span> 
                    <span className="hover-scale-text ">
                      {artwork.artist
@@ -68,6 +68,9 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
 
             <p className="text-gray-600 mt-1">
               added on : {artwork.date_added.split("-")[1]} - {artwork.date_added.split("-")[0]} 
+            </p>
+            <p className="text-gray-600 mt-1">
+              Dimensions : {artwork.width} x {artwork.height} cm
             </p>
             <span className="inline-block mt-2 px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full uppercase">
               {artwork.medium}
