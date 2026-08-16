@@ -8,12 +8,18 @@ import { useState } from "react";
 export function Navbar() {
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const isActive = (path: string) =>
-    
-    pathname === path 
-      ? "text-purple-600 font-bold border-b-2 border-purple-600" 
-      : "text-slate-600 hover:text-purple-600 font-medium transition-all";
+  const isActive = (path: string) =>{
+  const isCurrentActive =
+    path === "/" 
+      ? pathname === "/" 
+      : pathname.startsWith(path);
+
+  return isCurrentActive
+    ? "text-purple-600 font-bold border-b-2 border-purple-600"
+    : "text-slate-600 hover:text-purple-600 font-medium transition-all";
+};
 
   return (
     
@@ -31,6 +37,17 @@ export function Navbar() {
           className="flex items-center font-extrabold uppercase tracking-widest text-slate-900 gap-3"
           style={{ letterSpacing: '2px' }}
         >
+
+          <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="lg:hidden p-2 text-2xl text-gray-700"
+        >
+          {/* lg class applies when the screen width is 1024px or larger. */}
+
+
+          {isOpen ? "✕" : "☰"}
+
+        </button>
           <Image 
             src="/assets/images/logo.png" 
             alt="ArtVault Logo" 
@@ -42,7 +59,11 @@ export function Navbar() {
           <span className="text-xl">ArtVault</span>
         </Link>
 
-        <ul className="hidden lg:flex items-center gap-16 text-sm">
+        <ul className={`
+            ${isOpen ? "flex flex-col absolute top-full left-0 w-full bg-white p-6 border-b shadow-lg gap-4" : "hidden"}
+
+            lg:flex lg:flex-row lg:static lg:w-auto lg:p-0 lg:border-none lg:shadow-none lg:gap-16 text-sm
+          `}>
           <li><Link href="/" className={`pb-1 ${isActive("/")}`}>Home</Link></li>
           <li><Link href="/artworks" className={`pb-1 ${isActive("/artworks")}`}> Browse Art</Link></li>
           <li><Link href="/workshops" className={`pb-1 ${isActive("/workshops")}`}>Workshops</Link></li>
