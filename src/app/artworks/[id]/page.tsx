@@ -3,6 +3,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import Zoom from "@/components/modules/artworks/zoom";
 import Link from "next/link";
+import {Truck} from 'lucide-react';
+import {MessagesSquare } from 'lucide-react';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -28,7 +30,7 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
 
   return (
     
-    <div className="container mx-auto p-5 max-w-5xl space-y-8">
+    <div className="container mx-auto pb-10 max-w-5xl space-y-5">
       <p>Artwork Detail Page </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         
@@ -49,10 +51,10 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
         </div>
 
 
-        <div className="flex flex-col justify-start gap-6">
-          <div className="py-5">
+        <div className="flex flex-col justify-start gap-8">
+          <div className="px-2">
             <br />
-            <h1 className="text-3xl font-bold py-5">{artwork.title}</h1>
+            <h1 className="text-3xl font-bold py-1">{artwork.title}</h1>
 
               <Link href={`/artists/${artwork.artist_id}`} className="text-blue-500 ">
                 <p className="text-gray-600 mt-1 ">
@@ -84,6 +86,9 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
             <button className="w-full py-3 bg-indigo-600 text-white rounded-md font-bold hover:bg-indigo-700 transition">
               BUY NOW
             </button>
+            <p className="flex items-center gap-2 mt-2"><MessagesSquare size={16} className="shrink-0" />Message Artist regarding inquiries.</p>
+            
+            <p className="flex items-center gap-2 mt-0"><Truck size={16}/>Ships directly from the artist</p>
           </div>
 
         </div>

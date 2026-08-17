@@ -17,12 +17,16 @@ export default async function ArtworksPage() {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6"> Explore Artworks</h1>
-      
+      <Link href={'/artworks/upload'}> 
+        <button>
+          Add Artwork
+        </button>
+      </Link>
       
       
 
-      <div className="columns-1  sm:columns-2 lg:columns-4 gap-6 ">  
-        {/* 1 columns in mobiles ,2 colums in tablets and 3 colums in desktops */}
+      <div className="columns-1  sm:columns-2 lg:columns-4 gap-3 ">  
+        {/* 1 columns in mobiles ,2 colums in tablets and 4 colums in desktops */}
 
         {artworks?.map((item) => (
 
