@@ -135,9 +135,9 @@ export default async function Home() {
               The brilliant minds pushing the boundaries of contemporary and digital art.
             </p>
           </div>
-          <a href="#" className="text-xs font-semibold text-blue-500 hover:underline">
+          <Link href="/artist" className="text-xs font-semibold text-blue-500 hover:underline">
             View All Artists ({dbArtists?.length || 0})
-          </a>
+          </Link>
         </div>
 
         {dbArtists && dbArtists.length > 0 ? (
@@ -178,9 +178,9 @@ export default async function Home() {
                   <p className="text-xs text-gray-500 italic max-w-xs mb-3">
                     {artist.bio || artist.quote || artist.description || "No biography available."}
                   </p>
-                  <a href="#" className="text-xs font-semibold text-blue-500 hover:underline">
+                  <Link href="/artist" className="text-xs font-semibold text-blue-500 hover:underline">
                     View Profile
-                  </a>
+                  </Link>
                 </div>
               );
             })}
