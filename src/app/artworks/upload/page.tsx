@@ -50,7 +50,6 @@ export default function UploadArtworkPage() {
       const { error: dbError } = await supabase.from("artwork").insert([
         {
           title,
-          category,
           medium,
           width: parseFloat(width),
           height: parseFloat(height),
@@ -135,7 +134,7 @@ export default function UploadArtworkPage() {
               />
             </div>
 
-            <div>
+          {/*   <div>
               <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
                 Category
               </label>
@@ -151,7 +150,7 @@ export default function UploadArtworkPage() {
                 <option value="Digital Art">Digital Art</option>
                 <option value="Drawing">Drawing</option>
               </select>
-            </div>
+            </div> */}
           </div>
 
           {/* Row 2: Medium & Dimensions */}

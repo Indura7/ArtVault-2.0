@@ -8,6 +8,7 @@ export default async function ArtworksPage() {
   const { data: artworks, error } = await supabase
 .from("artwork")
 .select(`*,
+      medium(medium_name),
       artist(first_name,last_name)`);
 
   if (error) {
@@ -25,12 +26,12 @@ export default async function ArtworksPage() {
       
       
 
-      <div className="columns-1  sm:columns-2 lg:columns-4 gap-3 ">  
+      <div className="columns-1  sm:columns-2 lg:columns-4 gap-4">  
         {/* 1 columns in mobiles ,2 colums in tablets and 4 colums in desktops */}
 
         {artworks?.map((item) => (
 
-          <div key={item.art_id} className='break-inside-avoid'>
+          <div key={item.art_id} className='break-inside-avoid p-3'>
           <Link key={item.art_id} href={`/artworks/${item.art_id}`}>
           <ArtworkCard key={item.art_id} artwork={item} />
           </Link>

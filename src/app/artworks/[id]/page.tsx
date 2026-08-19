@@ -16,6 +16,7 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
   const { data: artwork, error } = await supabase
     .from("artwork")
     .select(`*,
+      medium(medium_name),
       artist (
         first_name,
         last_name)
@@ -75,7 +76,7 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
               Dimensions : {artwork.width} x {artwork.height} cm
             </p>
             <span className="inline-block mt-2 px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full uppercase">
-              {artwork.medium}
+              {artwork.medium? `${artwork.medium.medium_name}` : "Unknown Medium"}
             </span>
           </div>
 

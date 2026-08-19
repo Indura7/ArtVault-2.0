@@ -5,7 +5,9 @@ interface ArtworkProps {
   artwork: {
     art_id: number;
     title: string;
-    medium: string;        
+    medium:{
+      medium_name:string;
+    };        
     image_path: string;  
     price: number;
     artist:{
@@ -37,7 +39,7 @@ export default function ArtworkCard({ artwork }: ArtworkProps) {
             {artwork.title} 
           </h3>
           <span className="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-1 rounded uppercase tracking-wide">
-            {artwork.medium}
+            {artwork.medium?.medium_name}
           </span>
         </div>
         
