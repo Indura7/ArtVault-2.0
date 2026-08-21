@@ -42,7 +42,7 @@ export default function ArtworkFilters({
   }, []);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 mb-8 bg-gray-50 p-4 rounded-lg border">
+    <div className="flex flex-wrap items-center justify-between gap-4 mb-8 bg-fuchsia-50 p-4 rounded-lg ">
       
       {/* 🔍 Search Input */}
       <div className="flex-1 min-w-[200px]">
@@ -73,7 +73,7 @@ export default function ArtworkFilters({
         </select>
       </div>
 
-      {/* ↕️ Sort Order */}
+      
       <div className="flex items-center gap-2">
         <label className="text-xs font-bold text-gray-500 uppercase">Sort By</label>
         <select 
