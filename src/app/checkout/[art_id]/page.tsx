@@ -38,7 +38,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
     
     // For the Sept 3rd MVP: We will just show an alert and redirect!
     // Later, you can insert this into a Supabase 'orders' table.
-    alert(`Order placed successfully for ${artwork.title}!\nThank you, ${buyerName}.`);
+    /* alert(`Order placed successfully for ${artwork.title}!\nThank you, ${buyerName}.`); */
     
     // Redirect back to home/gallery
     router.push('/artworks');
@@ -53,8 +53,8 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         
-        {/* 📝 Left Column: Shipping Details Form */}
-        <div>
+        
+         <div>
           <h2 className="text-xl font-bold mb-4 border-b pb-2">Shipping Details</h2>
           <form onSubmit={handlePlaceOrder} className="space-y-4">
             <div>
@@ -94,10 +94,10 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
               type="submit"
               className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition mt-6"
             >
-              Confirm Order (Demo)
+              Confirm Order
             </button>
           </form>
-        </div>
+        </div> 
 
         {/* 🛒 Right Column: Order Summary */}
         <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 h-fit">
@@ -106,11 +106,11 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
           <div className="flex gap-4 mb-4">
             <img 
               src={artwork?.image_path} 
-              alt={artwork?.title} 
+               alt={artwork?.title}  
               className="w-24 h-24 object-cover rounded-md"
             />
             <div>
-              <h3 className="font-bold text-lg">{artwork?.title}</h3>
+               <h3 className="font-bold text-lg">{artwork?.title}</h3> 
               <p className="text-gray-500 text-sm">Art ID: {artwork?.art_id}</p>
             </div>
           </div>
@@ -121,9 +121,9 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
           </div>
           
           <p className="text-xs text-gray-400 mt-4 text-center">
-            🔒 Secure transaction simulated for IC 2206 Presentation
+            Secure transaction simulated with payhere sandbox. No real payment is processed in this demo.
           </p>
-        </div>
+        </div> 
 
       </div>
     </div>
