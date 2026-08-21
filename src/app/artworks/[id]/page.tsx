@@ -84,9 +84,11 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
             <h2 className="text-3xl font-extrabold text-blue-600">
               {Number(artwork.price).toLocaleString("en-US", { minimumFractionDigits: 2 })} LKR
             </h2>
-            <button className="w-full py-3 bg-indigo-600 text-white rounded-md font-bold hover:bg-indigo-700 transition">
-              BUY NOW
-            </button>
+            <Link href={`/checkout/${artwork.art_id}`}>
+              <button className="w-full py-3 bg-indigo-600 text-white rounded-md font-bold hover:bg-indigo-700 transition">
+                BUY NOW
+              </button>
+            </Link>
             <p className="flex items-center gap-2 mt-2"><MessagesSquare size={16} className="shrink-0" />Message Artist regarding inquiries.</p>
             
             <p className="flex items-center gap-2 mt-0"><Truck size={16}/>Ships directly from the artist</p>
