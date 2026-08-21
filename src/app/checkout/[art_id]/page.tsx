@@ -16,6 +16,10 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
   const [buyerName, setBuyerName] = useState('');
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const [city, setCity] = useState('');   
+  
 
   // 1. Fetch the specific artwork details 🖼️
   useEffect(() => {
@@ -48,7 +52,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
   if (!artwork) return <div className="p-10 text-center text-red-500">Artwork not found!</div>;
 
   return (
-    <div className="container mx-auto p-6 max-w-5xl">
+    <div className="container mx-auto p-1 max-w-6xl">
       <h1 className="text-3xl font-bold mb-8">Secure Checkout</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -63,29 +67,71 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
                 required
                 type="text" 
                 value={buyerName}
+                placeholder='A B Saman Perera'
                 onChange={(e) => setBuyerName(e.target.value)}
                 className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-600"
               />
             </div>
-            
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">Delivery Address</label>
-              <textarea 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div>
+              <label className="block text-sm font-bold text-gray-700 mb-1">Mobile Number</label>
+              <input 
                 required
-                rows={3}
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                type="tel" 
+                value={phone}
+                placeholder='0771234567'
+                onChange={(e) => setPhone(e.target.value)}
                 className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-600"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">Phone Number</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">E-mail</label>
               <input 
                 required
-                type="tel" 
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                type="email" 
+                value={email}
+                placeholder='you@gmail.com'
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-600"
+              />
+            </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-1">City</label>
+              <input 
+                required
+                type="text" 
+                value={city}
+                placeholder='Colombo'
+                onChange={(e) => setCity(e.target.value)}
+                className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-600"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-1">Postal Code</label>
+              <input 
+                required
+                type="text" 
+                value={postalCode}
+                placeholder='00100'
+                onChange={(e) => setPostalCode(e.target.value)}
+                className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-600"
+              />
+            </div>
+            </div>
+
+             <div>
+              <label className="block text-sm font-bold text-gray-700 mb-1">Street Address</label>
+              <textarea
+                required
+                rows={3}
+                value={address}
+                placeholder='No. 123, Main Street'
+                onChange={(e) => setAddress(e.target.value)}
                 className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-600"
               />
             </div>
