@@ -1,7 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import zoom from "@/components/modules/artworks/zoom";
 import Zoom from "@/components/modules/artworks/zoom";
 
 interface PageProps {
@@ -50,7 +49,7 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
         <div className="flex flex-col justify-start gap-6">
           <div>
             <br />
-            <h1 className="text-3xl font-bold">{artwork.title}</h1>
+            <h1 className="text-3xl font-bold"> {artwork.title}</h1>
             <p className="text-gray-600 mt-1">
               By {artwork.artist 
                 ? `${artwork.artist.first_name} ${artwork.artist.last_name}`
