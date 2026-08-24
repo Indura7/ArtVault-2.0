@@ -21,6 +21,10 @@ export function Navbar() {
     : "text-slate-600 hover:text-purple-600 font-medium transition-all";
 };
 
+  if (pathname.startsWith('/checkout')) {
+    return null; 
+  }
+
   return (
     
     <nav 

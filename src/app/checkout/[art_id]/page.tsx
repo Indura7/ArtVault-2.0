@@ -1,8 +1,9 @@
 'use client';
-
+import Image from "next/image";   
 import { useState, useEffect,use } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import Link from "next/link";
 
 export default function CheckoutPage({ params }: { params: Promise<{ art_id: string }> }) {
   const router = useRouter();
@@ -52,8 +53,38 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
   if (!artwork) return <div className="p-10 text-center text-red-500">Artwork not found!</div>;
 
   return (
+    
     <div className="container mx-auto p-1 max-w-6xl">
+      <div className="flex items-center justify-between mb-8 border-b border-gray-200 pb-4">
+      <button 
+          onClick={() => router.back()} 
+          className="flex items-center text-blue-600 font-bold hover:text-blue-800 transition"
+        >
+          <span className="mr-2 text-xl">←</span> Back
+        </button>
+        
+        <Link href="/">       
+        <div className="flex item-center gap-2  items-center">
+       <Image 
+                  src="/assets/images/logo.png" 
+                  alt="ArtVault Logo" 
+                  width={48} 
+                  height={48} 
+                  className="object-contain"
+                  priority
+                />
+
+        <div className="text-xl font-extrabold tracking-widest text-gray-800">
+          ART<span className="text-blue-600">VAULT</span>
+        </div>
+        </div>
+        </Link>
+     
+      </div>
+
+
       <h1 className="text-3xl font-bold mb-8">Secure Checkout</h1>
+      
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         
