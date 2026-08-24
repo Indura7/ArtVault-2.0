@@ -58,11 +58,11 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
       <div className="flex items-center justify-between mb-8 border-b border-gray-200 pb-4">
       <button 
           onClick={() => router.back()} 
-          className="flex items-center text-blue-600 font-bold hover:text-blue-800 transition"
+          className="flex items-center text-blue-600 font-bold hover:text-blue-800 transition cursor-pointer"
         >
           <span className="mr-2 text-xl">←</span> Back
         </button>
-        
+
         <Link href="/">       
         <div className="flex item-center gap-2  items-center">
        <Image 
@@ -176,7 +176,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
           </form>
         </div> 
 
-        {/* 🛒 Right Column: Order Summary */}
+        
         <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 h-fit">
           <h2 className="text-xl font-bold mb-4 border-b pb-2">Order Summary</h2>
           
