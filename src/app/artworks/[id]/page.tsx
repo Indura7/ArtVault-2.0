@@ -85,7 +85,7 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
               {Number(artwork.price).toLocaleString("en-US", { minimumFractionDigits: 2 })} LKR
             </h2>
             <Link href={`/checkout/${artwork.art_id}`}>
-              <button className="w-full py-3 bg-indigo-600 text-white rounded-md font-bold hover:bg-indigo-700 transition">
+              <button className="w-full py-3 bg-indigo-600 text-white rounded-md font-bold hover:bg-indigo-700 transition cursor-pointer">
                 BUY NOW
               </button>
             </Link>

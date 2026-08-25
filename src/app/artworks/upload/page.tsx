@@ -10,8 +10,10 @@ export default function UploadArtworkPage() {
   
   // Form State
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
+  
+  const [mediumList, setMediumList] = useState<any[]>([]);
   const [medium, setMedium] = useState("");
+
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
   const [description, setDescription] = useState("");
@@ -19,13 +21,23 @@ export default function UploadArtworkPage() {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  // Load existing artists for Temporary Dev Mode selection
+  
   useEffect(() => {
     async function fetchArtists() {
       const { data } = await supabase.from("artist").select("artist_id, first_name, last_name");
       if (data) setArtists(data);
+
+      
     }
     fetchArtists();
+  }, []);
+
+    useEffect(() => {
+    async function fetchMediums() {
+      const { data } = await supabase.from("medium").select("medium_id, medium_name");
+      if (data) setMediumList(data);
+    }
+    fetchMediums();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -159,14 +171,27 @@ export default function UploadArtworkPage() {
               <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
                 Medium
               </label>
-              <input
+             {/*  <input
                 type="text"
                 placeholder="e.g. Acrylic on Canvas"
                 value={medium}
                 onChange={(e) => setMedium(e.target.value)}
                 className="w-full border border-gray-300 p-2.5 rounded-md text-sm outline-none focus:border-blue-500"
                 required
-              />
+              /> */}
+              <select
+                value={medium}
+                onChange={(e) => setMedium(e.target.value)}
+                className="w-full border border-gray-300 p-2.5 rounded-md text-sm outline-none focus:border-blue-500 mt-2"
+                required
+                >
+                <option value="">Select Medium</option>
+                {mediumList.map((m) => (
+                  <option key={m.medium_id} value={m.medium_name}>
+                    {m.medium_name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
