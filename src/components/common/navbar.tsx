@@ -45,7 +45,7 @@ export function Navbar() {
           <li><Link href="/" className={`pb-1 ${isActive("/")}`}>Home</Link></li>
           <li><Link href="/artworks" className={`pb-1 ${isActive("/artworks")}`}>Browse Art</Link></li>
           <li><Link href="/workshops" className={`pb-1 ${isActive("/workshops")}`}>Workshops</Link></li>
-          <li><Link href="/artist" className={`pb-1 ${isActive("/artist")}`}>Artists</Link></li>
+          <li><Link href="/artists" className={`pb-1 ${pathname?.startsWith("/artist") ? "text-purple-600 font-bold border-b-2 border-purple-600" : "text-slate-600 hover:text-purple-600 font-medium transition-all"}`}>Artists</Link></li>
           <li><Link href="/about" className={`pb-1 ${isActive("/about")}`}>About Us</Link></li>
         </ul>
 
