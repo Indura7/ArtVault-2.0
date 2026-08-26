@@ -5,7 +5,9 @@ interface ArtworkProps {
   artwork: {
     art_id: number;
     title: string;
-    type: string;        
+    medium:{
+      medium_name:string;
+    };        
     image_path: string;  
     price: number;
     artist:{
@@ -30,7 +32,6 @@ export default function ArtworkCard({ artwork }: ArtworkProps) {
           className="w-full h-auto block rounded-t-lg"
         />
       </div>
-
       
       <div className="p-4 space-y-2 bg-white" >
         <div className="flex justify-between items-center">
@@ -38,10 +39,9 @@ export default function ArtworkCard({ artwork }: ArtworkProps) {
             {artwork.title} 
           </h3>
           <span className="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-1 rounded uppercase tracking-wide">
-            {artwork.type}
+            {artwork.medium?.medium_name}
           </span>
         </div>
-
         
         <div className="flex items-center gap-1 text-sm text-gray-600">
           <User size={16} className="text-gray-500" />
@@ -50,7 +50,6 @@ export default function ArtworkCard({ artwork }: ArtworkProps) {
         </span>
         </div>
 
-        {/* Price */}
         <p className="text-sm font-medium text-blue-600">
           {artwork.price.toFixed(2)} LKR
         </p>
