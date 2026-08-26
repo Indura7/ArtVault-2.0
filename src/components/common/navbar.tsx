@@ -45,7 +45,7 @@ export function Navbar() {
           <li><Link href="/" className={`pb-1 ${isActive("/")}`}>Home</Link></li>
           <li><Link href="/artworks" className={`pb-1 ${isActive("/artworks")}`}>Browse Art</Link></li>
           <li><Link href="/workshops" className={`pb-1 ${isActive("/workshops")}`}>Workshops</Link></li>
-          <li><Link href="/artist" className={`pb-1 ${isActive("/artist")}`}>Artists</Link></li>
+          <li><Link href="/artists" className={`pb-1 ${pathname?.startsWith("/artist") ? "text-purple-600 font-bold border-b-2 border-purple-600" : "text-slate-600 hover:text-purple-600 font-medium transition-all"}`}>Artists</Link></li>
           <li><Link href="/about" className={`pb-1 ${isActive("/about")}`}>About Us</Link></li>
         </ul>
 
@@ -64,13 +64,13 @@ export function Navbar() {
           ) : (
             <>
               <Link 
-                href="/login" 
+                href="/auth/login" 
                 className="text-sm font-bold uppercase border-2 border-purple-500 text-purple-600 hover:bg-purple-50 px-6 py-2 rounded-full transition-all tracking-wider"
               >
                 Login
               </Link>
               <Link 
-                href="/register" 
+                href="/auth/register" 
                 className="text-sm font-bold uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 px-6 py-2 rounded-full shadow-md transition-all tracking-wider"
               >
                 Register
