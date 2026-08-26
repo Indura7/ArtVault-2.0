@@ -15,3 +15,26 @@ body {
 .pb-1:hover{
   color: #d53f8c;
 }
+
+.card:hover {
+  transform: scale(0.9);
+  
+}
+
+.card{
+  transition: transform 0.3s ease;
+}
+
+@layer utilities {
+  .hover-scale-text {
+    display: inline-block;
+    transition: transform 0.2s ease;
+    transform-origin: left;
+    color: blue;
+    
+  }
+  .hover-scale-text:hover {
+    transform: scale(1.05);
+    color: #a92dcf;
+  }
+}
