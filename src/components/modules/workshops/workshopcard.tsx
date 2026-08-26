@@ -29,7 +29,7 @@ export default function WorkshopCard({ workshop }: WorkshopProps) {
       })
     : "Date TBD";
 
-  // Fallback Image (Database එකේ image_url නැතිනම් පෙන්වීමට default image එකක්)
+  // Fallback Image (if you haven't dbms image_url, then show default image)
   const displayImage =
     workshop.image_url && workshop.image_url.trim() !== ""
       ? workshop.image_url
@@ -65,9 +65,10 @@ export default function WorkshopCard({ workshop }: WorkshopProps) {
           <span>
             {workshop.artist?.first_name
               ? `${workshop.artist.first_name} ${workshop.artist.last_name || ""}`
-              : "Elena Vane"}
+              : "Unknown Artist"}
           </span>
         </div>
+              
 
         {/* Date */}
         <div className="flex items-center gap-1 text-sm text-gray-600">
