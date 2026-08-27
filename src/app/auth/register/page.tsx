@@ -27,8 +27,10 @@ export default function RegisterPage() {
 
   // Basic Form States
   const [role, setRole] = useState<Role>("customer");
-  const [fullName, setFullName] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [mobile_no, setMobileNo] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -70,10 +72,11 @@ export default function RegisterPage() {
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
+    setLoading(true);
     setErrorMsg(null);
     setSuccessMsg(null);
 
-    if (!fullName.trim()) return setErrorMsg("Please enter your full name.");
+    if (!first_name.trim() || !last_name.trim()) return setErrorMsg("Please enter your full name.");
     if (!allRulesPassed) return setErrorMsg("Please meet all password requirements.");
     if (!passwordsMatch) return setErrorMsg("Passwords do not match.");
     if (!agreedToTerms) return setErrorMsg("Please agree to the Terms of Service.");
@@ -84,7 +87,7 @@ export default function RegisterPage() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: fullName, role } },
+        options: { data: { full_name: `${first_name} ${last_name}`, role } },
       });
 
       if (error) {
@@ -119,9 +122,10 @@ export default function RegisterPage() {
         if (role === "artist") {
           const { error: dbError } = await supabase.from("artist").insert({
             id: data.user.id,
-            full_name: fullName,
+            first_name: first_name,
+            last_name: last_name,
             email: email,
-            display_name: displayName || fullName,
+            display_name: displayName || `${first_name} ${last_name}`,
             category: category,
             bio: bio,
             avatar_url: avatarUrl,
@@ -131,7 +135,7 @@ export default function RegisterPage() {
         } else {
           const { error: dbError } = await supabase.from("customer").insert({
             id: data.user.id,
-            full_name: fullName,
+            first_name: first_name,
             email: email,
           });
 
@@ -271,13 +275,26 @@ export default function RegisterPage() {
               {/* Full Name */}
               <div className="space-y-1">
                 <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                  FULL NAME
+                  FIRST NAME
                 </label>
                 <input
                   type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Liyanage Nuwan Kaushalya"
+                  value={first_name}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Nuwan"
+                  className="w-full py-2 border-b border-slate-200 focus:border-blue-600 outline-none text-xs sm:text-sm text-slate-800 transition bg-transparent placeholder:text-slate-300"
+                  required
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                  LAST NAME
+                </label>
+                <input
+                  type="text"
+                  value={last_name}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Kaushalya"
                   className="w-full py-2 border-b border-slate-200 focus:border-blue-600 outline-none text-xs sm:text-sm text-slate-800 transition bg-transparent placeholder:text-slate-300"
                   required
                 />
@@ -293,6 +310,20 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="nuwan@gmail.com"
+                  className="w-full py-2 border-b border-slate-200 focus:border-blue-600 outline-none text-xs sm:text-sm text-slate-800 transition bg-transparent placeholder:text-slate-300"
+                  required
+                />
+              </div>
+
+               <div className="space-y-1">
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                  Mobile Number
+                </label>
+                <input
+                  type="tel"
+                  value={mobile_no}
+                  onChange={(e) => setMobileNo(e.target.value)}
+                  placeholder="0712345678"
                   className="w-full py-2 border-b border-slate-200 focus:border-blue-600 outline-none text-xs sm:text-sm text-slate-800 transition bg-transparent placeholder:text-slate-300"
                   required
                 />
