@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, use } from 'react';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Calendar, Clock, User, Video, Award, CheckCircle } from 'lucide-react';
 
@@ -145,9 +146,14 @@ export default function WorkshopDetailPage({ params }: { params: Promise<{ id: s
         {/* Right Sidebar */}
         <div className="space-y-6">
           <div className="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm space-y-6">
-            <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl shadow-md transition">
-              RESERVE YOUR SPOT ({workshop.price ? `${workshop.price} LKR` : 'Free'})
-            </button>
+            
+            {/* LINKED BUTTON */}
+            <Link href={`/checkout/${workshop.workshop_id}`}>
+              <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl shadow-md transition cursor-pointer">
+                RESERVE YOUR SPOT ({workshop.price ? `${workshop.price} LKR` : 'Free'})
+              </button>
+            </Link>
+
 
             <ul className="space-y-3 text-xs text-gray-600 border-b pb-6">
               <li className="flex items-center gap-2">
