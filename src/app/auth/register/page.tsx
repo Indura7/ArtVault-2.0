@@ -38,8 +38,8 @@ export default function RegisterPage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   // Artist Additional Information States
-  const [displayName, setDisplayName] = useState("");
-  const [category, setCategory] = useState("Digital Art");
+  const [address, setAddress] = useState("");
+  const [category, setCategory] = useState("");
   const [bio, setBio] = useState("");
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -125,7 +125,7 @@ export default function RegisterPage() {
             first_name: first_name,
             last_name: last_name,
             email: email,
-            display_name: displayName || `${first_name} ${last_name}`,
+            address: address,
             category: category,
             bio: bio,
             avatar_url: avatarUrl,
@@ -136,7 +136,9 @@ export default function RegisterPage() {
           const { error: dbError } = await supabase.from("customer").insert({
             id: data.user.id,
             first_name: first_name,
+            last_name: last_name,
             email: email,
+            mobile_no: mobile_no,
           });
 
           if (dbError) console.error("Customer DB insertion failed:", dbError);
@@ -409,13 +411,13 @@ export default function RegisterPage() {
                   {/* Artist Display Name */}
                   <div className="space-y-1">
                     <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                      ARTIST DISPLAY NAME
+                      ADDRESS
                     </label>
                     <input
                       type="text"
-                      value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
-                      placeholder="eg : Nuwan Art Studio"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="eg : 123 Art Street, Creative City"
                       className="w-full py-2 border-b border-slate-200 focus:border-blue-600 outline-none text-xs sm:text-sm text-slate-800 transition bg-transparent placeholder:text-slate-300"
                     />
                   </div>
