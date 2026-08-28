@@ -128,17 +128,16 @@ useEffect(() => {
         <div className="flex items-center gap-3">
           {user ? (
             <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-slate-700">Hi, Artist 👋</span>
               <Link 
                 href={userRole === "artist" ? "/artist-dashboard" : "/customer-dashboard"} 
-                className="text-sm font-bold uppercase border-2 border-purple-500 text-purple-600 hover:bg-purple-50 px-6 py-2 rounded-full transition-all tracking-wider"
+                className="text-sm font-bold uppercase border-2 border-purple-500 text-white bg-gradient-to-r from-purple-700 to-purple-300 hover:from-purple-300 hover:to-purple-700 px-6 py-2 rounded-full transition-all tracking-wider"
               >
                 {userRole === "artist" ? "Artist Dashboard" : "My Profile"}
               </Link>
               
               <button 
                 onClick={handleLogout}
-                className="text-sm px-5 py-2 text-slate-600 border border-slate-200 rounded-full hover:bg-slate-50 transition-colors"
+                className="text-sm font-bold uppercase border-2 border-red-500 bg-gradient-to-r from-red-700 to-red-300 text-white hover:from-red-300 hover:to-red-700 px-6 py-2 rounded-full shadow-md transition-all tracking-wider"
               >
                 Logout
               </button>
