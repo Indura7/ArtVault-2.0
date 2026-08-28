@@ -148,7 +148,7 @@ export default function WorkshopDetailPage({ params }: { params: Promise<{ id: s
           <div className="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm space-y-6">
             
             {/* LINKED BUTTON */}
-            <Link href={`/checkout/${workshop.workshop_id}`}>
+            <Link href={`/checkout/workshop/${workshop.workshop_id}`}>
               <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl shadow-md transition cursor-pointer">
                 RESERVE YOUR SPOT ({workshop.price ? `${workshop.price} LKR` : 'Free'})
               </button>
