@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Heart, PenLine, Upload, Check, X } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+/* import { supabase } from "@/lib/supabase"; */
+import { createClient } from "@/lib/supabase/client";
 
 type Role = "customer" | "artist";
 
@@ -24,6 +25,7 @@ const PASSWORD_RULES: PasswordRule[] = [
 
 export default function RegisterPage() {
   const router = useRouter();
+  
 
   // Basic Form States
   const [role, setRole] = useState<Role>("customer");
@@ -36,6 +38,8 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const supabase = createClient();
+
 
   // Artist Additional Information States
   const [address, setAddress] = useState("");
