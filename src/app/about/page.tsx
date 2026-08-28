@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { Bell } from "lucide-react";
 import { Award, Users, Heart, Sparkles, Send } from 'lucide-react';
 
 export default function AboutPage() {
@@ -196,23 +197,21 @@ export default function AboutPage() {
         </div>
         </section>
 
-      {/* 6. CALL TO ACTION (NEWSLETTER) */}
-      <section className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-16 px-6 text-center">
-        <div className="max-w-2xl mx-auto space-y-6">
-          <Send className="w-10 h-10 mx-auto opacity-90" />
-          <h2 className="text-3xl font-bold">Stay Informed & Inspired</h2>
-          <p className="text-xs sm:text-sm text-purple-100">
-            Join our curated newsletter to receive updates about new gallery drops, upcoming workshops, and featured artist interviews.
-          </p>
-          <div className="flex justify-center pt-2">
-            <Link href="/auth/register">
-              <button className="px-8 py-3 bg-white text-purple-700 font-bold text-xs rounded-full uppercase tracking-wider hover:bg-gray-100 transition shadow-lg cursor-pointer">
-                JOIN THE COMMUNITY
-              </button>
-            </Link>
-          </div>
+      {/* Call To Action BANNER */}
+    <section className="bg-gradient-to-r from-indigo-900 via-purple-700 to-pink-500 text-white py-16 px-6 text-center">
+        <div className="max-w-2xl mx-auto flex flex-col items-center">
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-4 backdrop-blur-md">
+                <Bell size={20} className="text-white" />
+            </div>
+            <h2 className="text-3xl font-serif font-bold mb-3">Stay Informed & Inspired</h2>
+                <p className="text-xs text-purple-100 leading-relaxed mb-8 max-w-lg">
+                    Our intelligent notification system ensures you're always connected to the artists and events you love.
+                </p>
+            <button className="px-8 py-3 bg-white text-gray-900 text-xs font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
+                 Join the Community
+            </button>
         </div>
-      </section>
+     </section>
 
     </main>
   );
