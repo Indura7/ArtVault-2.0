@@ -121,7 +121,7 @@ export default function RegisterPage() {
         // 3. Save details into database tables
         if (role === "artist") {
           const { error: dbError } = await supabase.from("artist").insert({
-            id: data.user.id,
+            auth_id: data.user.id,
             first_name: first_name,
             last_name: last_name,
             email: email,
@@ -135,7 +135,7 @@ export default function RegisterPage() {
           if (dbError) console.error("Artist DB insertion failed:", dbError);
         } else {
           const { error: dbError } = await supabase.from("customer").insert({
-            id: data.user.id,
+            auth_id: data.user.id,
             first_name: first_name,
             last_name: last_name,
             email: email,
