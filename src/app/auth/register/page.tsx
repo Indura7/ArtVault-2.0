@@ -125,6 +125,7 @@ export default function RegisterPage() {
             first_name: first_name,
             last_name: last_name,
             email: email,
+            mobile_no: mobile_no,
             address: address,
             category: category,
             bio: bio,
