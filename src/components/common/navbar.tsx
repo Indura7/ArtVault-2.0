@@ -2,24 +2,73 @@
 
 import Link from "next/link";
 import Image from "next/image";      
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+
+
 
 export function Navbar() {
   const pathname = usePathname();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const supabase = createClient();
+  const [user, setUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState<"artist" | "customer" | null>(null);
+
+useEffect(() => {
+     const fetchRole = async (userId: string) => {
+      const { data } = await supabase
+        .from("artist")
+        .select("auth_id")
+        .eq("auth_id", userId)
+        .maybeSingle(); 
+        
+      setUserRole(data ? "artist" : "customer");
+    };
+
+    const checkInitialUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      if (user) await fetchRole(user.id);
+    };
+    checkInitialUser();
+
+    // 3. Live listener for logins/logouts
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+      if (session?.user) {
+        fetchRole(session.user.id);
+      } else {
+        setUserRole(null); // Clear role on logout
+      }
+    });
+
+    return () => authListener.subscription.unsubscribe();
+  }, [supabase]);
+
+  // 2. 🚪 The Logout Function
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/auth/login"); 
+  };
 
   const isActive = (path: string) =>{
-  const isCurrentActive =
-    path === "/" 
-      ? pathname === "/" 
-      : pathname.startsWith(path);
+    const isCurrentActive =
+      path === "/" 
+        ? pathname === "/" 
+        : pathname.startsWith(path);
 
-  return isCurrentActive
-    ? "text-purple-600 font-bold border-b-2 border-purple-600"
-    : "text-slate-600 hover:text-purple-600 font-medium transition-all";
-};
+    return isCurrentActive
+      ? "text-purple-600 font-bold border-b-2 border-purple-600"
+      : "text-slate-600 hover:text-purple-600 font-medium transition-all";
+  };
+
+  if (pathname.startsWith('/checkout')) {
+    return null; 
+  }
+
+
 
   if (pathname.startsWith('/checkout')) {
     return null; 
@@ -77,11 +126,18 @@ export function Navbar() {
 
         {}
         <div className="flex items-center gap-3">
-          {isLoggedIn ? (
+          {user ? (
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-slate-700">Hi, Artist 👋</span>
+              <Link 
+                href={userRole === "artist" ? "/artist-dashboard" : "/customer-dashboard"} 
+                className="text-sm font-bold uppercase border-2 border-purple-500 text-purple-600 hover:bg-purple-50 px-6 py-2 rounded-full transition-all tracking-wider"
+              >
+                {userRole === "artist" ? "Artist Dashboard" : "My Profile"}
+              </Link>
+              
               <button 
-                onClick={() => setIsLoggedIn(false)}
+                onClick={handleLogout}
                 className="text-sm px-5 py-2 text-slate-600 border border-slate-200 rounded-full hover:bg-slate-50 transition-colors"
               >
                 Logout
