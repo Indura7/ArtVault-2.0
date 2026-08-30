@@ -64,6 +64,7 @@ export default function ArtistDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50/50 pb-20">
+
       {/* Header Bar */}
       <div className="bg-white border-b border-gray-100 py-6 px-6 sm:px-12">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -84,11 +85,14 @@ export default function ArtistDashboard() {
 
           {/* Action Buttons */}
           <div className="flex items-center gap-3">
-            <button className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-full text-xs font-bold transition shadow-md shadow-purple-200">
-              <PlusCircle size={15} />
-              Upload New Art
-            </button>
-
+            <Link 
+            href="/artworks/upload" 
+            className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-full text-xs font-bold transition shadow-md shadow-purple-200"
+            >
+                 <PlusCircle size={15} />
+                 Upload New Art
+            </Link>
+            
             <Link 
               href="/workshops/create" 
               className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-full text-xs font-bold transition shadow-md shadow-purple-200"
