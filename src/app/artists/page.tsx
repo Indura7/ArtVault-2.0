@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Search, RotateCw, Sparkles, Filter, X } from 'lucide-react';
 import ArtistCard, { Artist } from '@/components/modules/artist/artistcard';
-import { INITIAL_CREATORS } from '@/lib/artists-data';
+import { ArtistProfile, INITIAL_CREATORS } from '@/lib/artists-data';
 import { supabase } from '@/lib/supabase';
 
 const CATEGORIES = [
@@ -127,7 +127,7 @@ export default function AllArtistsPage() {
     setIsLoadingMore(true);
     setTimeout(() => {
       // Sanitize the static dataset in case it has holes/undefined entries
-      setArtists(INITIAL_CREATORS.filter((a): a is Artist => !!a && typeof a === 'object'));
+      setArtists(INITIAL_CREATORS.filter((a): a is ArtistProfile => !!a && typeof a === 'object'));
       setIsLoadingMore(false);
       setHasLoadedMore(true);
     }, 500);
