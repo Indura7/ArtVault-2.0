@@ -126,7 +126,7 @@ export default function AllArtistsPage() {
   const handleLoadMore = () => {
     setIsLoadingMore(true);
     setTimeout(() => {
-      // Sanitize the static dataset in case it has holes/undefined entries
+      
       setArtists(INITIAL_CREATORS.filter((a): a is ArtistProfile => !!a && typeof a === 'object'));
       setIsLoadingMore(false);
       setHasLoadedMore(true);
