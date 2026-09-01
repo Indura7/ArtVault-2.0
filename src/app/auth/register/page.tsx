@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Heart, PenLine, Upload, Check, X } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+/* import { supabase } from "@/lib/supabase"; */
+import { createClient } from "@/lib/supabase/client";
 
 type Role = "customer" | "artist";
 
@@ -24,20 +25,25 @@ const PASSWORD_RULES: PasswordRule[] = [
 
 export default function RegisterPage() {
   const router = useRouter();
+  
 
   // Basic Form States
   const [role, setRole] = useState<Role>("customer");
-  const [fullName, setFullName] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [mobile_no, setMobileNo] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const supabase = createClient();
+
 
   // Artist Additional Information States
-  const [displayName, setDisplayName] = useState("");
-  const [category, setCategory] = useState("Digital Art");
+  const [address, setAddress] = useState("");
+  const [category, setCategory] = useState("");
   const [bio, setBio] = useState("");
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -70,10 +76,11 @@ export default function RegisterPage() {
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
+    setLoading(true);
     setErrorMsg(null);
     setSuccessMsg(null);
 
-    if (!fullName.trim()) return setErrorMsg("Please enter your full name.");
+    if (!first_name.trim() || !last_name.trim()) return setErrorMsg("Please enter your full name.");
     if (!allRulesPassed) return setErrorMsg("Please meet all password requirements.");
     if (!passwordsMatch) return setErrorMsg("Passwords do not match.");
     if (!agreedToTerms) return setErrorMsg("Please agree to the Terms of Service.");
@@ -84,7 +91,7 @@ export default function RegisterPage() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: fullName, role } },
+        options: { data: { full_name: `${first_name} ${last_name}`, role } },
       });
 
       if (error) {
@@ -118,10 +125,12 @@ export default function RegisterPage() {
         // 3. Save details into database tables
         if (role === "artist") {
           const { error: dbError } = await supabase.from("artist").insert({
-            id: data.user.id,
-            full_name: fullName,
+            auth_id: data.user.id,
+            first_name: first_name,
+            last_name: last_name,
             email: email,
-            display_name: displayName || fullName,
+            mobile_no: mobile_no,
+            address: address,
             category: category,
             bio: bio,
             avatar_url: avatarUrl,
@@ -130,9 +139,11 @@ export default function RegisterPage() {
           if (dbError) console.error("Artist DB insertion failed:", dbError);
         } else {
           const { error: dbError } = await supabase.from("customer").insert({
-            id: data.user.id,
-            full_name: fullName,
+            auth_id: data.user.id,
+            first_name: first_name,
+            last_name: last_name,
             email: email,
+            mobile_no: mobile_no,
           });
 
           if (dbError) console.error("Customer DB insertion failed:", dbError);
@@ -271,13 +282,26 @@ export default function RegisterPage() {
               {/* Full Name */}
               <div className="space-y-1">
                 <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                  FULL NAME
+                  FIRST NAME
                 </label>
                 <input
                   type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Liyanage Nuwan Kaushalya"
+                  value={first_name}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Nuwan"
+                  className="w-full py-2 border-b border-slate-200 focus:border-blue-600 outline-none text-xs sm:text-sm text-slate-800 transition bg-transparent placeholder:text-slate-300"
+                  required
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                  LAST NAME
+                </label>
+                <input
+                  type="text"
+                  value={last_name}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Kaushalya"
                   className="w-full py-2 border-b border-slate-200 focus:border-blue-600 outline-none text-xs sm:text-sm text-slate-800 transition bg-transparent placeholder:text-slate-300"
                   required
                 />
@@ -293,6 +317,20 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="nuwan@gmail.com"
+                  className="w-full py-2 border-b border-slate-200 focus:border-blue-600 outline-none text-xs sm:text-sm text-slate-800 transition bg-transparent placeholder:text-slate-300"
+                  required
+                />
+              </div>
+
+               <div className="space-y-1">
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                  Mobile Number
+                </label>
+                <input
+                  type="tel"
+                  value={mobile_no}
+                  onChange={(e) => setMobileNo(e.target.value)}
+                  placeholder="0712345678"
                   className="w-full py-2 border-b border-slate-200 focus:border-blue-600 outline-none text-xs sm:text-sm text-slate-800 transition bg-transparent placeholder:text-slate-300"
                   required
                 />
@@ -378,13 +416,13 @@ export default function RegisterPage() {
                   {/* Artist Display Name */}
                   <div className="space-y-1">
                     <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                      ARTIST DISPLAY NAME
+                      ADDRESS
                     </label>
                     <input
                       type="text"
-                      value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
-                      placeholder="eg : Nuwan Art Studio"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="eg : 123 Art Street, Creative City"
                       className="w-full py-2 border-b border-slate-200 focus:border-blue-600 outline-none text-xs sm:text-sm text-slate-800 transition bg-transparent placeholder:text-slate-300"
                     />
                   </div>
