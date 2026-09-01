@@ -60,7 +60,7 @@ export function Footer() {
           </div>
 
           {/* COLUMN 3: SUPPORT (Center-Right) */}
-                      <div className="col-span-6 md:col-span-3 lg:col-span-2 flex flex-col gap-3">
+                <div className="col-span-6 md:col-span-3 lg:col-span-2 flex flex-col gap-3">
               <h6 className="text-xs font-black uppercase tracking-widest text-slate-900">Support</h6>
               <ul className="flex flex-col gap-2 text-sm text-slate-600 font-medium">
                 <li>
