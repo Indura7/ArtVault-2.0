@@ -18,7 +18,7 @@ export default function Zoom({
 }: ZoomPreviewProps){
 
     const [position, setPosition] = useState({ x: 50, y: 50 });
-const [isHovered, setIsHovered] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
 const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
   const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
@@ -45,7 +45,7 @@ return(
   className="w-full h-auto block transition-transform duration-150 ease-out"
   style={{
     transformOrigin: `${position.x}% ${position.y}%`,
-    transform: isHovered ? "scale(2.5)" : "scale(1)",
+    transform: isHovered ? "scale(1.5)" : "scale(1)",
   }}
 />
 </div>

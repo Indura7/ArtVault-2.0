@@ -21,7 +21,7 @@ export default async function Home() {
     <div className="min-h-screen bg-white text-gray-800 font-sans">
       
       {/* DB Connection Status Banner */}
-      <div className="max-w-6xl mx-auto px-6 pt-4">
+      {/* <div className="max-w-6xl mx-auto px-6 pt-4">
         {hasError ? (
           <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-md">
             ⚠️ Connection Notice: {artworkError?.message || artistError?.message || workshopError?.message}
@@ -34,7 +34,7 @@ export default async function Home() {
             </span>
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* HERO SECTION */}
       <section className="relative py-20 px-6 text-center overflow-hidden">

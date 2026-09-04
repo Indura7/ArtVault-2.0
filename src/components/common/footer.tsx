@@ -60,14 +60,31 @@ export function Footer() {
           </div>
 
           {/* COLUMN 3: SUPPORT (Center-Right) */}
-          <div className="col-span-6 md:col-span-3 lg:col-span-2 flex flex-col gap-3">
-            <h6 className="text-xs font-black uppercase tracking-widest text-slate-900">Support</h6>
-            <ul className="flex flex-col gap-2 text-sm text-slate-600 font-medium">
-              <li><Link href="#" className="hover:text-purple-600 transition-colors flex items-center gap-1"><span className="text-purple-500 font-bold">&gt;</span> Help Center</Link></li>
-              <li><Link href="#" className="hover:text-purple-600 transition-colors flex items-center gap-1"><span className="text-purple-500 font-bold">&gt;</span> Privacy Policy</Link></li>
-              <li><Link href="#" className="hover:text-purple-600 transition-colors flex items-center gap-1"><span className="text-purple-500 font-bold">&gt;</span> Contact Us</Link></li>
-            </ul>
-          </div>
+                      <div className="col-span-6 md:col-span-3 lg:col-span-2 flex flex-col gap-3">
+              <h6 className="text-xs font-black uppercase tracking-widest text-slate-900">Support</h6>
+              <ul className="flex flex-col gap-2 text-sm text-slate-600 font-medium">
+                <li>
+                  <Link href="/help" className="hover:text-purple-600 transition-colors flex items-center gap-1">
+                    <span className="text-purple-500 font-bold">&gt;</span> Help Center
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms/privacy" className="hover:text-purple-600 transition-colors flex items-center gap-1">
+                    <span className="text-purple-500 font-bold">&gt;</span> Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="hover:text-purple-600 transition-colors flex items-center gap-1">
+                    <span className="text-purple-500 font-bold">&gt;</span> Terms &amp; Conditions
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-purple-600 transition-colors flex items-center gap-1">
+                    <span className="text-purple-500 font-bold">&gt;</span> Contact Us
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
           {/* COLUMN 4: SOCIALS (Right Side) */}
           <div className="md:col-span-6 lg:col-span-3 flex flex-col gap-3">
@@ -102,7 +119,9 @@ export function Footer() {
         {/* 📜 BOTTOM COPYRIGHT ROW */}
         <div className="mt-12 pt-6 border-t border-slate-200/50 text-center text-xs text-slate-500 font-medium">
           &copy; 2026 ArtVault. All rights reserved. 
-          <Link href="#" className="hover:text-purple-600 ml-3 transition-colors">Terms & Privacy</Link>
+          <Link href="/terms" className="hover:text-purple-600 ml-3 transition-colors">Terms</Link>
+          <span className="mx-1">&amp;</span>
+          <Link href="/terms/privacy" className="hover:text-purple-600 transition-colors">Privacy</Link>
         </div>
 
       </div>
