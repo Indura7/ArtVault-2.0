@@ -65,12 +65,12 @@ export default function ArtworksPage() {
   return (
     <div className="container mx-auto p-6">
       
-      <Link href={'/artworks/upload'}> 
+      {/* <Link href={'/artworks/upload'}> 
         <button>
           Add Artwork
         </button>
-      </Link>
-<div className="space-y-3 max-w-3xl">
+      </Link> */}
+        <div className="space-y-3 max-w-3xl">
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 font-sans">
             Explore Artworks
           </h1>
