@@ -52,8 +52,8 @@ useEffect(() => {
     await supabase.auth.signOut();
     localStorage.clear();
     sessionStorage.clear();
-    /* router.push("/auth/login"); */ 
-    alert("You have been logged out successfully.");
+    router.push("/auth/login"); 
+    alert("You will be redirected to the login page after logout.");
   };
 
   const isActive = (path: string) =>{
