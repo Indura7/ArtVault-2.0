@@ -69,7 +69,7 @@ export default function UploadArtworkPage() {
       const { error: dbError } = await supabase.from("artwork").insert([
         {
           title,
-          medium,
+          medium_id: medium,
           width: parseFloat(width),
           height: parseFloat(height),
           
@@ -154,7 +154,7 @@ export default function UploadArtworkPage() {
                 >
                 <option value="">Select Medium</option>
                 {mediumList.map((m) => (
-                  <option key={m.medium_id} value={m.medium_name}>
+                  <option key={m.medium_id} value={m.medium_id}>
                     {m.medium_name}
                   </option>
                 ))}
