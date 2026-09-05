@@ -2,22 +2,79 @@
 
 import Link from "next/link";
 import Image from "next/image";      
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 export function Navbar() {
   const pathname = usePathname();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState<"artist" | "customer" | null>(null);
 
-  const isActive = (path: string) => 
-    pathname === path 
-      ? "text-purple-600 font-bold border-b-2 border-purple-600" 
+  useEffect(() => {
+    const fetchRole = async (userId: string) => {
+      const { data } = await supabase
+        .from("artist")
+        .select("auth_id")
+        .eq("auth_id", userId)
+        .maybeSingle(); 
+        
+      setUserRole(data ? "artist" : "customer");
+    };
+
+    const checkInitialUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      if (user) await fetchRole(user.id);
+    };
+    checkInitialUser();
+
+    // 3. Live listener for logins/logouts
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+      if (session?.user) {
+        fetchRole(session.user.id);
+      } else {
+        setUserRole(null); // Clear role on logout
+      }
+    });
+
+    return () => authListener.subscription.unsubscribe();
+  }, []);
+
+  // 2. 🚪 The Logout Function
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/auth/login"); 
+  };
+
+  const isActive = (path: string) =>{
+    const isCurrentActive =
+      path === "/" 
+        ? pathname === "/" 
+        : pathname.startsWith(path);
+
+    return isCurrentActive
+      ? "text-purple-600 font-bold border-b-2 border-purple-600"
       : "text-slate-600 hover:text-purple-600 font-medium transition-all";
+  };
+
+  if (pathname.startsWith('/checkout')) {
+    return null; 
+  }
+
+
+
+  if (pathname.startsWith('/checkout')) {
+    return null; 
+  }
 
   return (
     
     <nav 
-      className="w-full border-b border-slate-100 sticky top-0 z-50 px-6 py-7 bg-cover bg-right bg-no-repeat bg-white"
+      className="w-full border-b border-slate-100 sticky top-0 z-50 px-6 py-3 bg-cover bg-right bg-no-repeat bg-white"
       style={{ backgroundImage: "url('/assets/images/topnav-bg.png')" }} 
     >
       
@@ -30,6 +87,17 @@ export function Navbar() {
           className="flex items-center font-extrabold uppercase tracking-widest text-slate-900 gap-3"
           style={{ letterSpacing: '2px' }}
         >
+
+          <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="lg:hidden p-2 text-2xl text-gray-700"
+        >
+          {/* lg class applies when the screen width is 1024px or larger. */}
+
+
+          {isOpen ? "✕" : "☰"}
+
+        </button>
           <Image 
             src="/assets/images/logo.png" 
             alt="ArtVault Logo" 
@@ -41,9 +109,13 @@ export function Navbar() {
           <span className="text-xl">ArtVault</span>
         </Link>
 
-        <ul className="hidden lg:flex items-center gap-16 text-sm">
+        <ul className={`
+            ${isOpen ? "flex flex-col absolute top-full left-0 w-full bg-white p-6 border-b shadow-lg gap-4" : "hidden"}
+
+            lg:flex lg:flex-row lg:static lg:w-auto lg:p-0 lg:border-none lg:shadow-none lg:gap-16 text-sm
+          `}>
           <li><Link href="/" className={`pb-1 ${isActive("/")}`}>Home</Link></li>
-          <li><Link href="/artworks" className={`pb-1 ${isActive("/artworks")}`}>Browse Art</Link></li>
+          <li><Link href="/artworks" className={`pb-1 ${isActive("/artworks")}`}> Browse Art</Link></li>
           <li><Link href="/workshops" className={`pb-1 ${isActive("/workshops")}`}>Workshops</Link></li>
           <li><Link href="/artists" className={`pb-1 ${pathname?.startsWith("/artist") ? "text-purple-600 font-bold border-b-2 border-purple-600" : "text-slate-600 hover:text-purple-600 font-medium transition-all"}`}>Artists</Link></li>
           <li><Link href="/about" className={`pb-1 ${isActive("/about")}`}>About Us</Link></li>
@@ -51,12 +123,18 @@ export function Navbar() {
 
         {}
         <div className="flex items-center gap-3">
-          {isLoggedIn ? (
+          {user ? (
             <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-slate-700">Hi, Artist 👋</span>
+              <Link 
+                href={userRole === "artist" ? "/artist-dashboard" : "/customer-dashboard"} 
+                className="text-sm font-bold uppercase border-2 border-purple-500 text-white bg-gradient-to-r from-purple-700 to-purple-300 hover:from-purple-300 hover:to-purple-700 px-6 py-2 rounded-full transition-all tracking-wider"
+              >
+                {userRole === "artist" ? "Artist Dashboard" : "My Profile"}
+              </Link>
+              
               <button 
-                onClick={() => setIsLoggedIn(false)}
-                className="text-sm px-5 py-2 text-slate-600 border border-slate-200 rounded-full hover:bg-slate-50 transition-colors"
+                onClick={handleLogout}
+                className="text-sm font-bold uppercase border-2 border-red-500 bg-gradient-to-r from-red-700 to-red-300 text-white hover:from-red-300 hover:to-red-700 px-6 py-2 rounded-full shadow-md transition-all tracking-wider"
               >
                 Logout
               </button>
