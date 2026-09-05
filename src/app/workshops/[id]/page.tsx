@@ -9,12 +9,12 @@ interface WorkshopDetail {
   workshop_id: number;
   title: string;
   description?: string;
-  price?: number;
   location?: string;
   image_url?: string;
   category?: string;
   seats_left?: number;
   date?: string;
+  time?: string;
   venue?: string;
   artist?: {
     first_name?: string;
@@ -76,20 +76,43 @@ export default function WorkshopDetailPage({ params }: { params: Promise<{ id: s
           
           {/* Metadata Badges */}
           <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+            
+            {/* DATE BADGE */}
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="w-5 h-5 text-purple-600" />
               <div>
                 <p className="text-xs text-gray-400 font-medium uppercase">DATE</p>
-                <p className="font-semibold text-gray-800">{workshop.date || 'Oct 24, 2026'}</p>
+                <p className="font-semibold text-gray-800">
+                  {workshop.date
+                    ? new Date(workshop.date).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })
+                    : 'TBA'}
+                </p>
               </div>
             </div>
+
+            {/* TIME BADGE */}
             <div className="flex items-center gap-2 text-sm">
               <Clock className="w-5 h-5 text-purple-600" />
               <div>
                 <p className="text-xs text-gray-400 font-medium uppercase">TIME</p>
-                <p className="font-semibold text-gray-800">10:00 AM – 4:00 PM EST</p>
+                <p className="font-semibold text-gray-800">
+                  {workshop.time
+                    ? workshop.time
+                    : workshop.date && workshop.date.includes('T')
+                    ? new Date(workshop.date).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                    : '10:00 AM – 4:00 PM'}
+                </p>
               </div>
             </div>
+
+            {/* AVAILABILITY BADGE */}
             <div className="flex items-center gap-2 text-sm text-red-600 font-semibold">
               <User className="w-5 h-5" />
               <div>
@@ -97,8 +120,8 @@ export default function WorkshopDetailPage({ params }: { params: Promise<{ id: s
                 <p>{workshop.seats_left ? `Only ${workshop.seats_left} seats left!` : 'Sold Out'}</p>
               </div>
             </div>
-          </div>
 
+          </div>
           {/* About Section */}
           <section className="space-y-3">
             <h2 className="text-xl font-bold text-gray-900">ABOUT THIS WORKSHOP</h2>
@@ -148,9 +171,9 @@ export default function WorkshopDetailPage({ params }: { params: Promise<{ id: s
           <div className="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm space-y-6">
             
             {/* LINKED BUTTON */}
-            <Link href={`/checkout/workshop/${workshop.workshop_id}`}>
+            <Link href={`/checkout/workshop/${workshop.workshop_id}`} className="block mb-6">
               <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl shadow-md transition cursor-pointer">
-                RESERVE YOUR SPOT ({workshop.price ? `${workshop.price} LKR` : 'Free'})
+                RESERVE YOUR SPOT 
               </button>
             </Link>
 

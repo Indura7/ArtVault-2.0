@@ -66,10 +66,12 @@ export default function WorkshopsPage() {
       {/* Header Section with Title & Search Input */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Explore Workshops</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Discover creative workshops, master new skills, and learn directly from top artists.
-          </p>
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 font-sans mb-3">
+            Explore Workshops
+          </h1>
+          <div className="text-sm sm:text-base text-slate-600 leading-relaxed space-y-1">
+            <p> Discover creative workshops, master new skills, and learn directly from top artists.</p>
+          </div>
         </div>
       
       
@@ -81,7 +83,7 @@ export default function WorkshopsPage() {
             placeholder="Search by title, category, venue..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+            className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-md text-sm font-sans focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
           />
         </div>
       </div>
