@@ -1,127 +1,141 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Heart, Calendar, User, Bell } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Heart, Calendar, User, Bell, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import Link from 'next/link';
 
-export default async function Home() {
-  // Fetch live data from artwork, artist, and workshop tables
-  const [
-    { data: dbArtworks, error: artworkError },
-    { data: dbArtists, error: artistError },
-    { data: dbWorkshops, error: workshopError },
-  ] = await Promise.all([
-    supabase.from("artwork").select("*"),
-    supabase.from("artist").select("*"),
-    supabase.from("workshop").select("*"),
-  ]);
+import FavoriteButton from "@/components/modules/customer/wishlist";
 
-  const hasError = artworkError || artistError || workshopError;
+// --- MAIN HOME PAGE COMPONENT ---
+export default function Home() {
+  const [dbArtworks, setDbArtworks] = useState<any[]>([]);
+  const [dbArtists, setDbArtists] = useState<any[]>([]);
+  const [dbWorkshops, setDbWorkshops] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadHomeData() {
+      setLoading(true);
+      const [
+        { data: artworkData },
+        { data: artistData },
+        { data: workshopData },
+      ] = await Promise.all([
+        supabase.from("artwork").select("*"),
+        supabase.from("artist").select("*"),
+        supabase.from("workshop").select("*"),
+      ]);
+
+      setDbArtworks(artworkData || []);
+      setDbArtists(artistData || []);
+      setDbWorkshops(workshopData || []);
+      setLoading(false);
+    }
+
+    loadHomeData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 size={32} className="animate-spin text-indigo-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans">
       
-      {/* DB Connection Status Banner */}
-      <div className="max-w-6xl mx-auto px-6 pt-4">
-        {hasError ? (
-          <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-md">
-            ⚠️ Connection Notice: {artworkError?.message || artistError?.message || workshopError?.message}
-          </div>
-        ) : (
-          <div className="p-3 bg-green-50 border border-green-200 text-green-700 text-xs rounded-md font-mono flex justify-between items-center">
-            <span>✅ Connected to Supabase Database</span>
-            <span className="text-[11px] opacity-80">
-              Loaded: {dbArtworks?.length || 0} Artworks | {dbArtists?.length || 0} Artists | {dbWorkshops?.length || 0} Workshops
-            </span>
-          </div>
-        )}
-      </div>
-
       {/* HERO SECTION */}
       <section className="relative py-20 px-6 text-center overflow-hidden">
-  {/* Background Image Layer */}
-  <div 
-    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-    style={{ backgroundImage: "url('/assets/images/home_bg.png')" }}
-  />
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/assets/images/home_bg.png')" }}
+        />
 
-  {/* Overlay (Adjust opacity or color like bg-black/40 or bg-purple-900/30 for contrast) */}
- 
+        <div className="max-w-3xl mx-auto z-10 relative">
+          <span className="text-xs font-semibold tracking-widest text-indigo-600 uppercase">
+            Discover Beautiful Art
+          </span>
+          <h1 className="text-5xl font-serif text-gray-900 mt-2">
+            Art That <span className="text-pink-500 italic">Inspires You</span>
+          </h1>
+          <p className="mt-4 text-gray-700 max-w-xl mx-auto text-sm leading-relaxed">
+            Explore original artworks, connect with talented artists, and join exciting workshops in a secure, curated digital gallery experience.
+          </p>
+          <div className="mt-8 flex justify-center gap-4">
+            <Link href="/artworks" className="inline-block">
+              <button className="px-6 py-3 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition shadow-md">
+                EXPLORE GALLERY
+              </button>
+            </Link>
 
-  {/* Content Layer */}
-  <div className="max-w-3xl mx-auto z-10 relative">
-    <span className="text-xs font-semibold tracking-widest text-indigo-600 uppercase">
-      Discover Beautiful Art
-    </span>
-    <h1 className="text-5xl font-serif text-gray-900 mt-2">
-      Art That <span className="text-pink-500 italic">Inspires You</span>
-    </h1>
-    <p className="mt-4 text-gray-700 max-w-xl mx-auto text-sm leading-relaxed">
-      Explore original artworks, connect with talented artists, and join exciting workshops in a secure, curated digital gallery experience.
-    </p>
-    <div className="mt-8 flex justify-center gap-4">
-      <Link href="/artworks" className="inline-block">
-        <button className="px-6 py-3 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition shadow-md">
-          EXPLORE GALLERY
-        </button>
-      </Link>
-        
-      {/* View Workshops Link */}
-        <Link href="/workshops" className="inline-block">
-          <button className="px-6 py-3 border border-gray-300 bg-white/90 text-gray-700 text-xs font-semibold tracking-wider rounded-md hover:bg-white transition shadow-sm">
-            View Workshops
-          </button>
-        </Link>
-    </div>
-  </div>
-</section>
+            <Link href="/workshops" className="inline-block">
+              <button className="px-6 py-3 border border-gray-300 bg-white/90 text-gray-700 text-xs font-semibold tracking-wider rounded-md hover:bg-white transition shadow-sm">
+                View Workshops
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* 1. FEATURED ARTWORKS FROM DATABASE */}
       <section className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-serif font-bold text-gray-900">Featured Artworks</h2>
-          <a href="/artworks" className="text-xs font-semibold text-blue-500 hover:underline">
-            View All Arts ({dbArtworks?.length || 0})
-          </a>
+          <Link href="/artworks" className="text-xs font-semibold text-blue-500 hover:underline">
+            View All Arts ({dbArtworks.length})
+          </Link>
         </div>
 
-        {dbArtworks && dbArtworks.length > 0 ? (
+        {dbArtworks.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {dbArtworks.map((art: any, index: number) => (
-              <div 
-                key={art.id || art.artwork_id || index} 
-                className="border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white"
-              >
-                <div className="relative h-64 bg-gray-100">
-                  <img 
-                    src={art.image_path || art.image || art.photo || "https://images.unsplash.com/photo-1541701494587-cb58502866ab"} 
-                    alt={art.title || "Artwork"} 
-                    className="w-full h-full object-cover" 
-                  />
-                  {art.status && (
-                    <span className="absolute top-3 left-3 text-[10px] font-bold text-white px-2 py-0.5 rounded-full uppercase tracking-wider bg-blue-600">
-                      {art.status}
-                    </span>
-                  )}
-                </div>
-                <div className="p-4">
-                  <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase block mb-1">
-                    {art.category || art.genre || "PAINTING"}
-                  </span>
-                  <h3 className="font-serif font-bold text-gray-800 text-base">{art.title || art.name}</h3>
-                  <p className="text-xs text-gray-500 mb-3">
-                    by {art.artist_name || art.artist || art.artist_id || "Unknown Artist"}
-                  </p>
-                  <div className="flex justify-between items-center pt-2 border-t border-gray-50">
-                    <span className="font-semibold text-sm text-gray-900">
-                      {art.price ? `$${art.price}` : "Inquire for Price"}
-                    </span>
-                    <button className="text-gray-400 hover:text-red-500 transition">
-                      <Heart size={16} />
-                    </button>
+            {dbArtworks.map((art: any, index: number) => {
+              const artworkId = art.art_id || art.id || art.artwork_id;
+              return (
+                <div 
+                  key={artworkId || index} 
+                  className="border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="relative h-64 bg-gray-100">
+                      <img 
+                        src={art.image_path || art.image || art.photo || "https://images.unsplash.com/photo-1541701494587-cb58502866ab"} 
+                        alt={art.title || "Artwork"} 
+                        className="w-full h-full object-cover" 
+                      />
+                      {art.status && (
+                        <span className="absolute top-3 left-3 text-[10px] font-bold text-white px-2 py-0.5 rounded-full uppercase tracking-wider bg-blue-600">
+                          {art.status}
+                        </span>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase block mb-1">
+                        {art.category || art.genre || "PAINTING"}
+                      </span>
+                      <h3 className="font-serif font-bold text-gray-800 text-base">{art.title || art.name}</h3>
+                      <p className="text-xs text-gray-500 mb-3">
+                        by {art.artist_name || art.artist || art.artist_id || "Unknown Artist"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 pt-0">
+                    <div className="flex justify-between items-center pt-2 border-t border-gray-50">
+                      <span className="font-semibold text-sm text-gray-900">
+                        {art.price ? `${art.price} LKR` : "Inquire for Price"}
+                      </span>
+                      {/* DYNAMIC HEART BUTTON */}
+                      <FavoriteButton artworkId={artworkId} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
@@ -140,15 +154,13 @@ export default async function Home() {
             </p>
           </div>
           <Link href="/artist" className="text-xs font-semibold text-blue-500 hover:underline">
-            View All Artists ({dbArtists?.length || 0})
+            View All Artists ({dbArtists.length})
           </Link>
         </div>
 
-        {dbArtists && dbArtists.length > 0 ? (
+        {dbArtists.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {dbArtists.map((artist: any, index: number) => {
-              // Try common column names for the artist's name,
-              // falling back to combining first_name + last_name
               const combinedName = `${artist.first_name || ""} ${artist.last_name || ""}`.trim();
 
               const artistName =
@@ -203,12 +215,12 @@ export default async function Home() {
             <h2 className="text-2xl font-serif font-bold text-gray-900">Upcoming Workshops</h2>
             <p className="text-xs text-gray-500 mt-1">Learn from the masters in exclusive, small-group sessions.</p>
           </div>
-          <a href="/workshops" className="text-xs font-semibold text-blue-500 hover:underline">
-            View All Workshops ({dbWorkshops?.length || 0})
-          </a>
+          <Link href="/workshops" className="text-xs font-semibold text-blue-500 hover:underline">
+            View All Workshops ({dbWorkshops.length})
+          </Link>
         </div>
 
-        {dbWorkshops && dbWorkshops.length > 0 ? (
+        {dbWorkshops.length > 0 ? (
           <div className="space-y-6">
             {dbWorkshops.map((ws: any, index: number) => (
               <div 
@@ -245,8 +257,8 @@ export default async function Home() {
 
                     <Link href={`/checkout/workshop/${ws.workshop_id || ws.id}`}>
                       <button className="px-5 py-2 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition shadow-md cursor-pointer">
-                         BOOK SEAT
-                       </button>
+                        BOOK SEAT
+                      </button>
                     </Link>
                   </div>
                 </div>
