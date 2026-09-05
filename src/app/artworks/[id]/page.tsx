@@ -39,16 +39,16 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
           <Zoom
           src={artwork.image_path}
           alt={artwork.title}
-          width={800}
-          height={1200}
+       /*    width={800}
+          height={1200} */
         />
-      {/*     <Image
+           {/* <Image
             src={artwork.image_path} 
             alt={artwork.title}
             width={800}
             height={1200}
             className="w-full h-auto block rounded-t-lg"
-          /> */}
+          />  */}
         </div>
 
 
