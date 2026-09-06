@@ -75,7 +75,7 @@ export function Footer() {
                 </li>
                 <li>
                   <Link href="/terms" className="hover:text-purple-600 transition-colors flex items-center gap-1">
-                    <span className="text-purple-500 font-bold">&gt;</span> Terms &; Conditions
+                    <span className="text-purple-500 font-bold">&gt;</span> Terms &amp; Conditions
                   </Link>
                 </li>
                 <li>
