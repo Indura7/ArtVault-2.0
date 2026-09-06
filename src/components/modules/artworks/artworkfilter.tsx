@@ -42,7 +42,7 @@ export default function ArtworkFilters({
   }, []);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 mb-8 bg-fuchsia-50 p-4 rounded-lg ">
+    <div className="flex flex-wrap items-center justify-between gap-4 mb-8 p-4 rounded-lg ">
       
       {/* 🔍 Search Input */}
       <div className="flex-1 min-w-[200px]">

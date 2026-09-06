@@ -2,18 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { UploadCloud, X, ArrowRight } from "lucide-react";
+import Image from 'next/image';
+import React, { ChangeEvent } from 'react';
+import { UploadCloud, X, ArrowRight, UploadCloudIcon,Trash  } from "lucide-react";
 
 export default function UploadArtworkPage() {
   const [artists, setArtists] = useState<any[]>([]);
   const [selectedArtist, setSelectedArtist] = useState("");
-  
-  // Form State
   const [title, setTitle] = useState("");
-  
   const [mediumList, setMediumList] = useState<any[]>([]);
   const [medium, setMedium] = useState("");
-
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
   const [description, setDescription] = useState("");
@@ -39,6 +38,13 @@ export default function UploadArtworkPage() {
     }
     fetchMediums();
   }, []);
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -223,7 +229,7 @@ export default function UploadArtworkPage() {
             </div>
           </div>
 
-          {/* Image Upload Area */}
+          
           <div>
             <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2 text-center">
               Upload Your Artwork Picture
@@ -232,21 +238,44 @@ export default function UploadArtworkPage() {
               <input
                 type="file"
                 accept="image/jpeg,image/png"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                onChange={(e) => {
+                  const selectedFile = e.target.files?.[0];
+                  if (selectedFile) {
+                    setFile(selectedFile);
+                    setImagePreview(URL.createObjectURL(selectedFile));
+                  } else {
+                    setFile(null);
+                    setImagePreview(null);
+                  }
+                }}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 required
               />
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <div className="p-3 bg-blue-50 text-blue-600 rounded-lg">
-                  <UploadCloud size={28} />
+              {imagePreview ? (
+                <div className="relative w-full h-48 rounded-md overflow-hidden ho">
+                <div className="absolute inset-0 w-full h-full hover:scale-110 transition-transform">
+                <Image 
+                  src={imagePreview} 
+                  alt="Artwork Preview" 
+                  fill 
+                  className="object-contain" // object-contain ensures no parts of the artwork are cropped out!
+                />
                 </div>
-                <p className="text-sm font-medium text-gray-700">
-                  {file ? file.name : "Drag and drop image here or browse"}
-                </p>
-                <p className="text-xs text-gray-400">
-                  Supported formats: JPEG, PNG. Max file size: 5MB
-                </p>
+                 <button type="button" onClick={() => { setFile(null); setImagePreview(null); }} className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition">
+                  <Trash className="w-5 h-5" />
+                </button>
               </div>
+
+             
+            ) : (
+              <div className="flex flex-col items-center text-slate-500">
+                <UploadCloudIcon className="w-10 h-10 text-blue-500 mb-2" />
+                <span className="font-semibold text-sm">Click to upload or drag and drop</span>
+                <span className="text-xs mt-1">Supported formats: JPEG, PNG. Max file size: 5MB</span>
+                
+              </div>
+            )}
+            
             </div>
           </div>
 
