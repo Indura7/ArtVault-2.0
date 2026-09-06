@@ -45,7 +45,7 @@ return(
   className="w-full h-auto block transition-transform duration-150 ease-out"
   style={{
     transformOrigin: `${position.x}% ${position.y}%`,
-    transform: isHovered ? "scale(1.5)" : "scale(1)",
+    transform: isHovered ? "scale(1.8)" : "scale(1)",
   }}
 />
 </div>

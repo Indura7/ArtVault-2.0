@@ -47,10 +47,13 @@ useEffect(() => {
     return () => authListener.subscription.unsubscribe();
   }, [supabase]);
 
-  // 2. 🚪 The Logout Function
+  
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    localStorage.clear();
+    sessionStorage.clear();
     router.push("/auth/login"); 
+    alert("You will be redirected to the login page after logout.");
   };
 
   const isActive = (path: string) =>{
