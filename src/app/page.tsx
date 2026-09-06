@@ -49,6 +49,22 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans">
       
+      {/* DB Connection Status Banner */}
+      {/* <div className="max-w-6xl mx-auto px-6 pt-4">
+        {hasError ? (
+          <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-md">
+            ⚠️ Connection Notice: {artworkError?.message || artistError?.message || workshopError?.message}
+          </div>
+        ) : (
+          <div className="p-3 bg-green-50 border border-green-200 text-green-700 text-xs rounded-md font-mono flex justify-between items-center">
+            <span>✅ Connected to Supabase Database</span>
+            <span className="text-[11px] opacity-80">
+              Loaded: {dbArtworks?.length || 0} Artworks | {dbArtists?.length || 0} Artists | {dbWorkshops?.length || 0} Workshops
+            </span>
+          </div>
+        )}
+      </div> */}
+
       {/* HERO SECTION */}
       <section className="relative py-20 px-6 text-center overflow-hidden">
         <div 

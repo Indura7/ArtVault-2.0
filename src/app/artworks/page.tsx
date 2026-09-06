@@ -65,12 +65,12 @@ export default function ArtworksPage() {
   return (
     <div className="container mx-auto p-6">
       
-      <Link href={'/artworks/upload'}> 
+      {/* <Link href={'/artworks/upload'}> 
         <button>
           Add Artwork
         </button>
-      </Link>
-<div className="space-y-3 max-w-3xl">
+      </Link> */}
+        <div className="space-y-3 max-w-3xl">
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 font-sans">
             Explore Artworks
           </h1>
@@ -94,8 +94,11 @@ export default function ArtworksPage() {
         {/* 1 columns in mobiles ,2 colums in tablets and 4 colums in desktops */}
 
         {artworks?.map((item) => (
+
           <div key={item.art_id} className='break-inside-avoid p-3'>
-            <ArtworkCard artwork={item} />
+          <Link key={item.art_id} href={`/artworks/${item.art_id}`}>
+          <ArtworkCard key={item.art_id} artwork={item} />
+          </Link>
           </div>
         ))}
       </div>

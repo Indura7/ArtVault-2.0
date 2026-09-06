@@ -4,17 +4,20 @@ import Link from "next/link";
 import Image from "next/image";      
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/client";
+
+
 
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const supabase = createClient();
   const [user, setUser] = useState<any>(null);
   const [userRole, setUserRole] = useState<"artist" | "customer" | null>(null);
 
-  useEffect(() => {
-    const fetchRole = async (userId: string) => {
+useEffect(() => {
+     const fetchRole = async (userId: string) => {
       const { data } = await supabase
         .from("artist")
         .select("auth_id")
@@ -42,12 +45,15 @@ export function Navbar() {
     });
 
     return () => authListener.subscription.unsubscribe();
-  }, []);
+  }, [supabase]);
 
-  // 2. 🚪 The Logout Function
+  
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    localStorage.clear();
+    sessionStorage.clear();
     router.push("/auth/login"); 
+    alert("You will be redirected to the login page after logout.");
   };
 
   const isActive = (path: string) =>{
