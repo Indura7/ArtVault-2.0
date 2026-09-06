@@ -59,14 +59,18 @@ export default async function Home() {
       Explore original artworks, connect with talented artists, and join exciting workshops in a secure, curated digital gallery experience.
     </p>
     <div className="mt-8 flex justify-center gap-4">
-     <Link href="/artworks" className="inline-block">
-  <button className="px-6 py-3 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition shadow-md">
-    EXPLORE GALLERY
-  </button>
-</Link>
-      <button className="px-6 py-3 border border-gray-300 bg-white/90 text-gray-700 text-xs font-semibold tracking-wider rounded-md hover:bg-white transition shadow-sm">
-        View Workshops
-      </button>
+      <Link href="/artworks" className="inline-block">
+        <button className="px-6 py-3 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition shadow-md">
+          EXPLORE GALLERY
+        </button>
+      </Link>
+        
+      {/* View Workshops Link */}
+        <Link href="/workshops" className="inline-block">
+          <button className="px-6 py-3 border border-gray-300 bg-white/90 text-gray-700 text-xs font-semibold tracking-wider rounded-md hover:bg-white transition shadow-sm">
+            View Workshops
+          </button>
+        </Link>
     </div>
   </div>
 </section>
@@ -199,7 +203,7 @@ export default async function Home() {
             <h2 className="text-2xl font-serif font-bold text-gray-900">Upcoming Workshops</h2>
             <p className="text-xs text-gray-500 mt-1">Learn from the masters in exclusive, small-group sessions.</p>
           </div>
-          <a href="#" className="text-xs font-semibold text-blue-500 hover:underline">
+          <a href="/workshops" className="text-xs font-semibold text-blue-500 hover:underline">
             View All Workshops ({dbWorkshops?.length || 0})
           </a>
         </div>
@@ -212,12 +216,15 @@ export default async function Home() {
                 className="flex flex-col md:flex-row bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm"
               >
                 <div className="md:w-1/3 h-48 md:h-auto bg-gray-100">
-                  <img 
-                    src={ws.image_url || ws.image || "https://images.unsplash.com/photo-1626785774573-4b799315345d"} 
-                    alt={ws.title || ws.name || "Workshop"} 
-                    className="w-full h-full object-cover" 
-                  />
+                  <Link href={`/workshops/${ws.workshop_id || ws.id}`}>
+                    <img 
+                      src={ws.image_url || ws.image || "https://images.unsplash.com/photo-1626785774573-4b799315345d"} 
+                      alt={ws.title || ws.name || "Workshop"} 
+                      className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition" 
+                    />
+                  </Link>
                 </div>
+
                 <div className="md:w-2/3 p-6 flex flex-col justify-between">
                   <div>
                     <div className="flex gap-3 text-[10px] font-bold mb-2">
@@ -235,9 +242,12 @@ export default async function Home() {
                     <span className="text-xs font-bold text-blue-500 flex items-center gap-1">
                       <User size={14} /> {ws.seats || ws.capacity ? `${ws.seats || ws.capacity} Seats` : "Available"}
                     </span>
-                    <button className="px-5 py-2 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition">
-                      BOOK SEAT
-                    </button>
+
+                    <Link href={`/checkout/workshop/${ws.workshop_id || ws.id}`}>
+                      <button className="px-5 py-2 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition shadow-md cursor-pointer">
+                         BOOK SEAT
+                       </button>
+                    </Link>
                   </div>
                 </div>
               </div>
