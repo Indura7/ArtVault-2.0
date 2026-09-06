@@ -41,6 +41,7 @@ export default function RegisterPage() {
   const supabase = createClient();
 
 
+
   // Artist Additional Information States
   const [address, setAddress] = useState("");
   const [category, setCategory] = useState("");
