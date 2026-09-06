@@ -22,6 +22,18 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
   const [postalCode, setPostalCode] = useState('');
   const [city, setCity] = useState('');   
   
+  useEffect(() => {
+    async function checkAuth() {
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        router.push('/auth/login');
+      }
+    }
+    
+    checkAuth();
+  }, [router]);
 
   // 1. Fetch the specific artwork details 🖼️
   useEffect(() => {
