@@ -4,10 +4,9 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Heart, Calendar, User, Bell, Loader2 } from "lucide-react";
+import { Calendar, User, Bell, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
-import FavoriteButton from "@/components/modules/customer/wishlist";
 
 // --- MAIN HOME PAGE COMPONENT ---
 export default function Home() {
@@ -19,12 +18,19 @@ export default function Home() {
   useEffect(() => {
     async function loadHomeData() {
       setLoading(true);
+
       const [
         { data: artworkData },
         { data: artistData },
         { data: workshopData },
       ] = await Promise.all([
-        supabase.from("artwork").select("*"),
+        supabase.from("artwork").select(`
+          *,
+          artist (
+            first_name,
+            last_name
+          )
+        `),
         supabase.from("artist").select("*"),
         supabase.from("workshop").select("*"),
       ]);
@@ -49,22 +55,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans">
       
-      {/* DB Connection Status Banner */}
-      {/* <div className="max-w-6xl mx-auto px-6 pt-4">
-        {hasError ? (
-          <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-md">
-            ⚠️ Connection Notice: {artworkError?.message || artistError?.message || workshopError?.message}
-          </div>
-        ) : (
-          <div className="p-3 bg-green-50 border border-green-200 text-green-700 text-xs rounded-md font-mono flex justify-between items-center">
-            <span>✅ Connected to Supabase Database</span>
-            <span className="text-[11px] opacity-80">
-              Loaded: {dbArtworks?.length || 0} Artworks | {dbArtists?.length || 0} Artists | {dbWorkshops?.length || 0} Workshops
-            </span>
-          </div>
-        )}
-      </div> */}
-
       {/* HERO SECTION */}
       <section className="relative py-20 px-6 text-center overflow-hidden">
         <div 
@@ -84,13 +74,13 @@ export default function Home() {
           </p>
           <div className="mt-8 flex justify-center gap-4">
             <Link href="/artworks" className="inline-block">
-              <button className="px-6 py-3 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition shadow-md">
+              <button className="px-6 py-3 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition shadow-md cursor-pointer">
                 EXPLORE GALLERY
               </button>
             </Link>
 
             <Link href="/workshops" className="inline-block">
-              <button className="px-6 py-3 border border-gray-300 bg-white/90 text-gray-700 text-xs font-semibold tracking-wider rounded-md hover:bg-white transition shadow-sm">
+              <button className="px-6 py-3 border border-gray-300 bg-white/90 text-gray-700 text-xs font-semibold tracking-wider rounded-md hover:bg-white transition shadow-sm cursor-pointer">
                 View Workshops
               </button>
             </Link>
@@ -111,17 +101,23 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {dbArtworks.map((art: any, index: number) => {
               const artworkId = art.art_id || art.id || art.artwork_id;
+              const artistName = art.artist
+                ? `${art.artist.first_name || ""} ${art.artist.last_name || ""}`.trim()
+                : art.artist_name || "Unknown Artist";
+
               return (
                 <div 
                   key={artworkId || index} 
-                  className="border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white flex flex-col justify-between"
+                  className="border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white flex flex-col justify-between group relative"
                 >
-                  <div>
-                    <div className="relative h-64 bg-gray-100">
+          
+                  {/* Clickable Card Link -> Routes to /artworks/[id] */}
+                  <Link href={`/artworks/${artworkId}`} className="block flex-1">
+                    <div className="relative h-64 bg-gray-100 overflow-hidden">
                       <img 
                         src={art.image_path || art.image || art.photo || "https://images.unsplash.com/photo-1541701494587-cb58502866ab"} 
                         alt={art.title || "Artwork"} 
-                        className="w-full h-full object-cover" 
+                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
                       />
                       {art.status && (
                         <span className="absolute top-3 left-3 text-[10px] font-bold text-white px-2 py-0.5 rounded-full uppercase tracking-wider bg-blue-600">
@@ -129,24 +125,33 @@ export default function Home() {
                         </span>
                       )}
                     </div>
+                    
                     <div className="p-4">
                       <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase block mb-1">
                         {art.category || art.genre || "PAINTING"}
                       </span>
-                      <h3 className="font-serif font-bold text-gray-800 text-base">{art.title || art.name}</h3>
-                      <p className="text-xs text-gray-500 mb-3">
-                        by {art.artist_name || art.artist || art.artist_id || "Unknown Artist"}
+                      <h3 className="font-serif font-bold text-gray-800 text-base group-hover:text-indigo-600 transition truncate">
+                        {art.title || art.name}
+                      </h3>
+                      <p className="text-xs text-gray-500 mb-1 truncate">
+                        by {artistName}
                       </p>
                     </div>
-                  </div>
+                  </Link>
 
+                  {/* Card Footer */}
                   <div className="p-4 pt-0">
                     <div className="flex justify-between items-center pt-2 border-t border-gray-50">
                       <span className="font-semibold text-sm text-gray-900">
-                        {art.price ? `${art.price} LKR` : "Inquire for Price"}
+                        {art.price ? `${Number(art.price).toLocaleString()} LKR` : "Inquire for Price"}
                       </span>
-                      {/* DYNAMIC HEART BUTTON */}
-                      <FavoriteButton artworkId={artworkId} />
+                      
+                      <Link 
+                        href={`/artworks/${artworkId}`}
+                        className="text-xs font-bold text-indigo-600 hover:underline uppercase tracking-wider"
+                      >
+                        View
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -155,12 +160,14 @@ export default function Home() {
           </div>
         ) : (
           <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-            <p className="text-sm text-gray-500">No artworks found in database table <code className="text-xs bg-gray-200 px-1 py-0.5 rounded">artwork</code>.</p>
+            <p className="text-sm text-gray-500">
+              No artworks found in database table <code className="text-xs bg-gray-200 px-1 py-0.5 rounded">artwork</code>.
+            </p>
           </div>
         )}
       </section>
 
-      {/* 2. MEET OUR ARTISTS FROM DATABASE */}
+      {/* 2. MEET OUR ARTISTS FROM DATABASE (UPDATED LINK NAVIGATION) */}
       <section className="max-w-6xl mx-auto px-6 py-12 border-t border-gray-100">
         <div className="flex justify-between items-start mb-10">
           <div>
@@ -169,7 +176,7 @@ export default function Home() {
               The brilliant minds pushing the boundaries of contemporary and digital art.
             </p>
           </div>
-          <Link href="/artist" className="text-xs font-semibold text-blue-500 hover:underline">
+          <Link href="/artists" className="text-xs font-semibold text-blue-500 hover:underline">
             View All Artists ({dbArtists.length})
           </Link>
         </div>
@@ -187,31 +194,48 @@ export default function Home() {
                 artist.title ||
                 (combinedName.length > 0 ? combinedName : null);
 
+              // Use primary key or artist_id
+              const artistId = artist.artist_id || artist.id || artist.username || index;
+
               return (
                 <div 
-                  key={artist.id || artist.artist_id || index} 
-                  className="flex flex-col items-center text-center"
+                  key={artistId} 
+                  className="flex flex-col items-center text-center group"
                 >
-                  <div className="w-28 h-28 rounded-full p-1 border-2 border-dashed border-blue-400 mb-4 overflow-hidden">
-                    <img 
-                      src={artist.image_url || artist.image || artist.profile_image || artist.photo_url || artist.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb"} 
-                      alt={artistName || "Artist"} 
-                      className="w-full h-full rounded-full object-cover" 
-                    />
-                  </div>
+                  {/* Clickable Avatar -> Routes to /artists/[id] */}
+                  <Link href={`/artists/${artistId}`} className="block">
+                    <div className="w-28 h-28 rounded-full p-1 border-2 border-dashed border-blue-400 mb-4 overflow-hidden group-hover:border-indigo-600 transition duration-300">
+                      <img 
+                        src={
+                          artist.image_url || 
+                          artist.profile_image || 
+                          artist.image || 
+                          artist.avatar_url || 
+                          artist.avatar || 
+                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb"
+                        } 
+                        alt={artistName || "Artist"} 
+                        className="w-full h-full rounded-full object-cover group-hover:scale-105 transition duration-300" 
+                      />
+                    </div>
+                  </Link>
                   
-                  <h3 className="font-serif font-bold text-gray-800 text-lg">
-                    {artistName || "Unnamed Artist"}
-                  </h3>
+                  {/* Clickable Artist Name */}
+                  <Link href={`/artists/${artistId}`} className="block">
+                    <h3 className="font-serif font-bold text-gray-800 text-lg group-hover:text-indigo-600 transition">
+                      {artistName || "Unnamed Artist"}
+                    </h3>
+                  </Link>
 
                   <span className="text-[10px] font-bold text-pink-500 tracking-wider uppercase mb-2 mt-1">
                     {artist.specialty || artist.category || "CONTEMPORARY ARTIST"}
                   </span>
-                  <p className="text-xs text-gray-500 italic max-w-xs mb-3">
+                  <p className="text-xs text-gray-500 italic max-w-xs mb-3 line-clamp-2">
                     {artist.bio || artist.quote || artist.description || "No biography available."}
                   </p>
-                  <Link href="/artist" className="text-xs font-semibold text-blue-500 hover:underline">
-                    View Profile
+
+                  <Link href={`/artists/${artistId}`} className="text-xs font-semibold text-blue-500 hover:text-indigo-600 hover:underline">
+                    View Profile &rarr;
                   </Link>
                 </div>
               );
@@ -219,7 +243,9 @@ export default function Home() {
           </div>
         ) : (
           <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-            <p className="text-sm text-gray-500">No artists found in database table <code className="text-xs bg-gray-200 px-1 py-0.5 rounded">artist</code>.</p>
+            <p className="text-sm text-gray-500">
+              No artists found in database table <code className="text-xs bg-gray-200 px-1 py-0.5 rounded">artist</code>.
+            </p>
           </div>
         )}
       </section>
@@ -238,52 +264,57 @@ export default function Home() {
 
         {dbWorkshops.length > 0 ? (
           <div className="space-y-6">
-            {dbWorkshops.map((ws: any, index: number) => (
-              <div 
-                key={ws.id || ws.workshop_id || index} 
-                className="flex flex-col md:flex-row bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm"
-              >
-                <div className="md:w-1/3 h-48 md:h-auto bg-gray-100">
-                  <Link href={`/workshops/${ws.workshop_id || ws.id}`}>
-                    <img 
-                      src={ws.image_url || ws.image || "https://images.unsplash.com/photo-1626785774573-4b799315345d"} 
-                      alt={ws.title || ws.name || "Workshop"} 
-                      className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition" 
-                    />
-                  </Link>
-                </div>
-
-                <div className="md:w-2/3 p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="flex gap-3 text-[10px] font-bold mb-2">
-                      <span className="text-pink-500 uppercase tracking-wider">{ws.category || "MASTERCLASS"}</span>
-                      {ws.date && (
-                        <span className="text-gray-400 flex items-center gap-1">
-                          <Calendar size={12} /> {ws.date}
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="font-serif font-bold text-xl text-gray-800 mb-2">{ws.title || ws.name}</h3>
-                    <p className="text-xs text-gray-500 leading-relaxed mb-4">{ws.description || "No workshop description available."}</p>
-                  </div>
-                  <div className="flex justify-between items-center pt-4 border-t border-gray-50">
-                    <span className="text-xs font-bold text-blue-500 flex items-center gap-1">
-                      <User size={14} /> {ws.seats || ws.capacity ? `${ws.seats || ws.capacity} Seats` : "Available"}
-                    </span>
-
-                    <Link href={`/checkout/workshop/${ws.workshop_id || ws.id}`}>
-                      <button className="px-5 py-2 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition shadow-md cursor-pointer">
-                        BOOK SEAT
-                      </button>
+            {dbWorkshops.map((ws: any, index: number) => {
+              const workshopId = ws.workshop_id || ws.id || index;
+              return (
+                <div 
+                  key={workshopId} 
+                  className="flex flex-col md:flex-row bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition"
+                >
+                  <div className="md:w-1/3 h-48 md:h-auto bg-gray-100">
+                    <Link href={`/workshops/${workshopId}`}>
+                      <img 
+                        src={ws.image_url || ws.image || "https://images.unsplash.com/photo-1626785774573-4b799315345d"} 
+                        alt={ws.title || ws.name || "Workshop"} 
+                        className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition" 
+                      />
                     </Link>
                   </div>
+
+                  <div className="md:w-2/3 p-6 flex flex-col justify-between">
+                    <div>
+                      <div className="flex gap-3 text-[10px] font-bold mb-2">
+                        <span className="text-pink-500 uppercase tracking-wider">{ws.category || "MASTERCLASS"}</span>
+                        {ws.date && (
+                          <span className="text-gray-400 flex items-center gap-1">
+                            <Calendar size={12} /> {ws.date}
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="font-serif font-bold text-xl text-gray-800 mb-2">{ws.title || ws.name}</h3>
+                      <p className="text-xs text-gray-500 leading-relaxed mb-4">{ws.description || "No workshop description available."}</p>
+                    </div>
+                    <div className="flex justify-between items-center pt-4 border-t border-gray-50">
+                      <span className="text-xs font-bold text-blue-500 flex items-center gap-1">
+                        <User size={14} /> {ws.seats || ws.capacity ? `${ws.seats || ws.capacity} Seats` : "Available"}
+                      </span>
+
+                      <Link href={`/checkout/workshop/${workshopId}`}>
+                        <button className="px-5 py-2 bg-indigo-700 text-white text-xs font-semibold tracking-wider rounded-md hover:bg-indigo-800 transition shadow-md cursor-pointer">
+                          BOOK SEAT
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-            <p className="text-sm text-gray-500">No workshops found in database table <code className="text-xs bg-gray-200 px-1 py-0.5 rounded">workshop</code>.</p>
+            <p className="text-sm text-gray-500">
+              No workshops found in database table <code className="text-xs bg-gray-200 px-1 py-0.5 rounded">workshop</code>.
+            </p>
           </div>
         )}
       </section>
@@ -298,7 +329,7 @@ export default function Home() {
           <p className="text-xs text-purple-100 leading-relaxed mb-8 max-w-lg">
             Our intelligent notification system ensures you're always connected to the artists and events you love.
           </p>
-          <button className="px-8 py-3 bg-white text-gray-900 text-xs font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
+          <button className="px-8 py-3 bg-white text-gray-900 text-xs font-bold rounded-full hover:bg-gray-100 transition shadow-lg cursor-pointer">
             Join the Community
           </button>
         </div>
