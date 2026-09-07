@@ -78,7 +78,7 @@ export default function FavoriteButton({ artworkId }: FavoriteButtonProps) {
 
     // Redirect unauthenticated users to register page
     if (!user) {
-      router.push("/auth/register");
+      router.push("/auth/login");
       setLoading(false);
       return;
     }
