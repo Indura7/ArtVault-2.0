@@ -27,9 +27,7 @@ export default function ArtworkCard({ artwork }: ArtworkProps) {
           />
         </Link>
         {/* Floating Heart Button */}
-        <div className="absolute top-3 right-3 bg-white/80 backdrop-blur-md rounded-full shadow z-10">
-          <FavoriteButton artworkId={artwork.art_id} />
-        </div>
+       
       </div>
 
       <Link href={`/artworks/${artwork.art_id}`} className="block p-4 space-y-2 bg-white">
