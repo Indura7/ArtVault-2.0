@@ -21,7 +21,7 @@ import Sidebar from '@/components/sidebar';
 import LoginView from '@/components/loginview';
 import Modals from '@/components/modals';
 
-// Tab Components (Exact lowercase & plural file paths from folder structure)
+// Tab Components
 import DashboardTab from '@/components/tabs/dashboardtab';
 import ManageArtistsTab from '@/components/tabs/manageartiststab';
 import ManageArtworksTab from '@/components/tabs/manageartworkstab';
@@ -480,6 +480,7 @@ export default function AdminDashboardPage() {
                 pendingModerations={pendingModerations}
                 handleApprove={handleApprove}
                 handleReject={handleReject}
+                setSelectedModerationItem={setSelectedModerationItem}
               />
             )}
 
