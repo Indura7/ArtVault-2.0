@@ -2,24 +2,76 @@
 
 import Link from "next/link";
 import Image from "next/image";      
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+
+
 
 export function Navbar() {
   const pathname = usePathname();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const supabase = createClient();
+  const [user, setUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState<"artist" | "customer" | null>(null);
+
+useEffect(() => {
+     const fetchRole = async (userId: string) => {
+      const { data } = await supabase
+        .from("artist")
+        .select("auth_id")
+        .eq("auth_id", userId)
+        .maybeSingle(); 
+        
+      setUserRole(data ? "artist" : "customer");
+    };
+
+    const checkInitialUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      if (user) await fetchRole(user.id);
+    };
+    checkInitialUser();
+
+    // 3. Live listener for logins/logouts
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+      if (session?.user) {
+        fetchRole(session.user.id);
+      } else {
+        setUserRole(null); // Clear role on logout
+      }
+    });
+
+    return () => authListener.subscription.unsubscribe();
+  }, [supabase]);
+
+  
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    localStorage.clear();
+    sessionStorage.clear();
+    router.push("/auth/login"); 
+    alert("You will be redirected to the login page after logout.");
+  };
 
   const isActive = (path: string) =>{
-  const isCurrentActive =
-    path === "/" 
-      ? pathname === "/" 
-      : pathname.startsWith(path);
+    const isCurrentActive =
+      path === "/" 
+        ? pathname === "/" 
+        : pathname.startsWith(path);
 
-  return isCurrentActive
-    ? "text-purple-600 font-bold border-b-2 border-purple-600"
-    : "text-slate-600 hover:text-purple-600 font-medium transition-all";
-};
+    return isCurrentActive
+      ? "text-purple-600 font-bold border-b-2 border-purple-600"
+      : "text-slate-600 hover:text-purple-600 font-medium transition-all";
+  };
+
+  if (pathname.startsWith('/checkout')) {
+    return null; 
+  }
+
+
 
   if (pathname.startsWith('/checkout')) {
     return null; 
@@ -71,18 +123,24 @@ export function Navbar() {
           <li><Link href="/" className={`pb-1 ${isActive("/")}`}>Home</Link></li>
           <li><Link href="/artworks" className={`pb-1 ${isActive("/artworks")}`}> Browse Art</Link></li>
           <li><Link href="/workshops" className={`pb-1 ${isActive("/workshops")}`}>Workshops</Link></li>
-          <li><Link href="/artist" className={`pb-1 ${isActive("/artist")}`}>Artists</Link></li>
+          <li><Link href="/artists" className={`pb-1 ${pathname?.startsWith("/artist") ? "text-purple-600 font-bold border-b-2 border-purple-600" : "text-slate-600 hover:text-purple-600 font-medium transition-all"}`}>Artists</Link></li>
           <li><Link href="/about" className={`pb-1 ${isActive("/about")}`}>About Us</Link></li>
         </ul>
 
         {}
         <div className="flex items-center gap-3">
-          {isLoggedIn ? (
+          {user ? (
             <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-slate-700">Hi, Artist 👋</span>
+              <Link 
+                href={userRole === "artist" ? "/artist-dashboard" : "/customer-dashboard"} 
+                className="text-sm font-bold uppercase border-2 border-purple-500 text-white bg-gradient-to-r from-purple-700 to-purple-300 hover:from-purple-300 hover:to-purple-700 px-6 py-2 rounded-full transition-all tracking-wider"
+              >
+                {userRole === "artist" ? "Artist Dashboard" : "My Profile"}
+              </Link>
+              
               <button 
-                onClick={() => setIsLoggedIn(false)}
-                className="text-sm px-5 py-2 text-slate-600 border border-slate-200 rounded-full hover:bg-slate-50 transition-colors"
+                onClick={handleLogout}
+                className="text-sm font-bold uppercase border-2 border-red-500 bg-gradient-to-r from-red-700 to-red-300 text-white hover:from-red-300 hover:to-red-700 px-6 py-2 rounded-full shadow-md transition-all tracking-wider"
               >
                 Logout
               </button>
@@ -90,13 +148,13 @@ export function Navbar() {
           ) : (
             <>
               <Link 
-                href="/login" 
+                href="/auth/login" 
                 className="text-sm font-bold uppercase border-2 border-purple-500 text-purple-600 hover:bg-purple-50 px-6 py-2 rounded-full transition-all tracking-wider"
               >
                 Login
               </Link>
               <Link 
-                href="/register" 
+                href="/auth/register" 
                 className="text-sm font-bold uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 px-6 py-2 rounded-full shadow-md transition-all tracking-wider"
               >
                 Register

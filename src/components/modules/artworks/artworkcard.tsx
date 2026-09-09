@@ -8,15 +8,10 @@ interface ArtworkProps {
   artwork: {
     art_id: number;
     title: string;
-    medium:{
-      medium_name:string;
-    };        
-    image_path: string;  
+    medium?: { medium_name: string };
+    image_path: string;
     price: number;
-    artist:{
-        first_name:string;
-        last_name:string;
-    }; 
+    artist?: { first_name: string; last_name: string };
   };
 }
 
@@ -56,24 +51,26 @@ export default function ArtworkCard({ artwork }: ArtworkProps) {
       
       <div className="p-3 space-y-1 bg-white" >
         <div className="flex justify-between items-center">
-          <h3 className="font-semibold text-gray-900 text-lg line-clamp-1">
-            {artwork.title} 
+          <h3 className="font-semibold text-gray-900 text-lg line-clamp-1 group-hover:text-purple-600 transition-colors">
+            {artwork.title}
           </h3>
-          <span className="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-1 rounded uppercase tracking-wide">
-            {artwork.medium?.medium_name}
-          </span>
+          {artwork.medium?.medium_name && (
+            <span className="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-1 rounded uppercase">
+              {artwork.medium.medium_name}
+            </span>
+          )}
         </div>
-        
+
         <div className="flex items-center gap-1 text-sm text-gray-600">
           <User size={16} className="text-gray-500" />
-        <span>
-            {artwork.artist?.first_name} {artwork.artist?.last_name} 
-        </span>
+          <span>
+            {artwork.artist?.first_name} {artwork.artist?.last_name}
+          </span>
         </div>
 
         <div className="flex items-center justify-between ">
         <p className="text-sm font-medium text-blue-600">
-          {artwork.price.toFixed(2)} LKR
+          {artwork.price ? Number(artwork.price).toFixed(2) : "0.00"} LKR
         </p>
 
         <div className="flex items-center space-x-1 text-slate-500 hover:text-red-500 transition cursor-pointer">

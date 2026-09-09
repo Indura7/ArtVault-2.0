@@ -7,7 +7,6 @@ import React, { ChangeEvent } from 'react';
 import { UploadCloud, X, ArrowRight, UploadCloudIcon,Trash  } from "lucide-react";
 
 export default function UploadArtworkPage() {
-  const [artists, setArtists] = useState<any[]>([]);
   const [selectedArtist, setSelectedArtist] = useState("");
   const [title, setTitle] = useState("");
   const [mediumList, setMediumList] = useState<any[]>([]);
@@ -22,13 +21,24 @@ export default function UploadArtworkPage() {
 
   
   useEffect(() => {
-    async function fetchArtists() {
-      const { data } = await supabase.from("artist").select("artist_id, first_name, last_name");
-      if (data) setArtists(data);
+    const fetchCurrentUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
 
-      
+      if (user) {
+        const { data: artstRecord, error } = await supabase
+          .from("artist")
+          .select("artist_id")
+          .eq("auth_id", user.id)
+          .maybeSingle();
+
+        if (artstRecord) {
+          setSelectedArtist(artstRecord.artist_id);
+        } else if (error) {
+          console.error("Error fetching current user:", error);
+        }
+      }
     }
-    fetchArtists();
+    fetchCurrentUser();
   }, []);
 
     useEffect(() => {
@@ -68,15 +78,14 @@ export default function UploadArtworkPage() {
       const { error: dbError } = await supabase.from("artwork").insert([
         {
           title,
-          medium,
+          medium_id: medium,
           width: parseFloat(width),
           height: parseFloat(height),
           
           description,
           price: parseFloat(price),
           image_path: urlData.publicUrl,
-          artist_id: parseInt(selectedArtist), // Temporary manual selection
-          /* date_added: new Date().toISOString().split("T")[0], */
+          artist_id: selectedArtist, 
         },
       ]);
 
@@ -116,27 +125,6 @@ export default function UploadArtworkPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           
-          {/* Temporary Dev Mode: Select Artist */}
-          <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
-            <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-1">
-              Select Artist (Dev Mode)
-            </label>
-            <select
-              value={selectedArtist}
-              onChange={(e) => setSelectedArtist(e.target.value)}
-              className="w-full bg-white border border-purple-200 p-2.5 rounded-md text-sm outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            >
-              <option value="">-- Choose Artist --</option>
-              {artists.map((a) => (
-                <option key={a.artist_id} value={a.artist_id}>
-                  {a.first_name} {a.last_name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Row 1: Title & Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
@@ -151,27 +139,9 @@ export default function UploadArtworkPage() {
                 required
               />
             </div>
-
-          {/*   <div>
-              <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
-                Category
-              </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full border border-gray-300 p-2.5 rounded-md text-sm outline-none focus:border-blue-500"
-                required
-              >
-                <option value="">Select Category</option>
-                <option value="Painting">Painting</option>
-                <option value="Photograph">Photograph</option>
-                <option value="Digital Art">Digital Art</option>
-                <option value="Drawing">Drawing</option>
-              </select>
-            </div> */}
           </div>
 
-          {/* Row 2: Medium & Dimensions */}
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
@@ -193,7 +163,7 @@ export default function UploadArtworkPage() {
                 >
                 <option value="">Select Medium</option>
                 {mediumList.map((m) => (
-                  <option key={m.medium_id} value={m.medium_name}>
+                  <option key={m.medium_id} value={m.medium_id}>
                     {m.medium_name}
                   </option>
                 ))}
