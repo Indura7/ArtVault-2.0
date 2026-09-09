@@ -33,7 +33,7 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
       <p>Artwork Detail Page </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         
-        <div>
+        <div>   
           <Zoom
             src={artwork.image_path}
             alt={artwork.title}
