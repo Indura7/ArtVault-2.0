@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/common/navbar";
 import { Footer } from "@/components/common/footer";
-import {ConditionalNavigation} from "@/components/common/conditionalNav";
+import { ConditionalNavigation } from "@/components/common/conditionalNav";
 
 /* import { SpeedInsights } from "@vercel/speed-insights/next" */
 
@@ -27,19 +27,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-
-
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-slate-900 dark:text-zinc-50`}>
-       
         <ConditionalNavigation>  
-        <main className="flex-grow">
-          {children}
-        </main>
+          <main className="flex-grow">
+            {children}
+          </main>
         </ConditionalNavigation>
-
       </body>
     </html>
   );
