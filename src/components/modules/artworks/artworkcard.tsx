@@ -1,7 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
-import { User } from "lucide-react";
-import FavoriteButton from "@/components/modules/customer/wishlist";
+import { User,Heart } from "lucide-react";
+import{useState , useEffect} from "react";
+import { supabase } from "@/lib/supabase";
+
 
 interface ArtworkProps {
   artwork: {
@@ -15,24 +16,40 @@ interface ArtworkProps {
 }
 
 export default function ArtworkCard({ artwork }: ArtworkProps) {
-  return (
-    <div className="card bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 relative group">
-      <div className="relative w-full h-64 bg-gray-100">
-        <Link href={`/artworks/${artwork.art_id}`} className="block w-full h-full">
-          <Image
-            src={artwork.image_path}
-            alt={artwork.title}
-            fill
-            className="object-cover rounded-t-lg"
-          />
-        </Link>
-        {/* Floating Heart Button */}
-        <div className="absolute top-3 right-3 bg-white/80 backdrop-blur-md rounded-full shadow z-10">
-          <FavoriteButton artworkId={artwork.art_id} />
-        </div>
-      </div>
+  
+  const [likeCount,setLikeCount]=useState(0);
+  useEffect(()=>{
+    const fetchLikeCount=async()=>{
+      const {count,error}=await supabase
+      .from('wish_list')
+      .select('*',{count:'exact', head:true})
+      .eq('artwork_id',artwork.art_id);
 
-      <Link href={`/artworks/${artwork.art_id}`} className="block p-4 space-y-2 bg-white">
+      if(!error && count !== null){
+        setLikeCount(count);}};
+        
+        fetchLikeCount();
+  },[artwork.art_id]);
+  
+  return (
+    
+
+
+    <div className="card bg-white rounded-lg border border-gray-400 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
+      {/* Artwork Image */}
+      <div /* className="relative w-full h-64 bg-gray-100" */>
+        <Image
+          src={artwork.image_path}
+          alt={artwork.title}
+          width={800}
+          height={1200}
+          sizes="50vw"
+          quality={10}
+          className="w-full h-auto block rounded-t-lg"
+        />
+      </div>
+      
+      <div className="p-3 space-y-1 bg-white" >
         <div className="flex justify-between items-center">
           <h3 className="font-semibold text-gray-900 text-lg line-clamp-1 group-hover:text-purple-600 transition-colors">
             {artwork.title}
@@ -51,10 +68,20 @@ export default function ArtworkCard({ artwork }: ArtworkProps) {
           </span>
         </div>
 
+        <div className="flex items-center justify-between ">
         <p className="text-sm font-medium text-blue-600">
           {artwork.price ? Number(artwork.price).toFixed(2) : "0.00"} LKR
         </p>
-      </Link>
+
+        <div className="flex items-center space-x-1 text-slate-500 hover:text-red-500 transition cursor-pointer">
+           <Heart size={16} className="text-gray-500" />
+          <span>{likeCount}</span>
+
+        </div>
+        </div>
+
+
+      </div>
     </div>
   );
 }
