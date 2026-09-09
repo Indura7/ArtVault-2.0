@@ -12,11 +12,7 @@ import {
   User, 
   Mail, 
   MapPin, 
-  Calendar, 
   ArrowLeft,
-  ExternalLink,
-  Clock,
-  CheckCircle2,
   Package,
   Trash2,
   Loader2
@@ -48,11 +44,13 @@ export default function CustomerDashboard() {
       }
 
       // 2. Fetch Customer Details from public.customer safely
-      let { data: customerData } = await supabase
+      let { data: customerDataArray } = await supabase
         .from("customer")
         .select("*")
         .eq("auth_id", user.id)
-        .maybeSingle();
+        .limit(1);
+
+      let customerData = customerDataArray && customerDataArray.length > 0 ? customerDataArray[0] : null;
 
       // Fallback by email if auth_id was not yet linked
       if (!customerData && user.email) {
@@ -60,10 +58,14 @@ export default function CustomerDashboard() {
           .from("customer")
           .select("*")
           .eq("email", user.email)
-          .maybeSingle();
-        if (byEmail) {
-          customerData = byEmail;
-          await supabase.from("customer").update({ auth_id: user.id }).eq("customer_id", byEmail.customer_id);
+          .limit(1);
+
+        if (byEmail && byEmail.length > 0) {
+          customerData = byEmail[0];
+          await supabase
+            .from("customer")
+            .update({ auth_id: user.id })
+            .eq("customer_id", customerData.customer_id);
         }
       }
 
@@ -73,7 +75,7 @@ export default function CustomerDashboard() {
         const parts = fullName.split(" ");
         const first_name = parts[0] || "Customer";
         const last_name = parts.slice(1).join(" ") || "";
-        const { data: newCust } = await supabase
+        const { data: newCustArray } = await supabase
           .from("customer")
           .insert({
             auth_id: user.id,
@@ -81,21 +83,20 @@ export default function CustomerDashboard() {
             first_name,
             last_name,
           })
-          .select("*")
-          .maybeSingle();
+          .select("*");
 
-        if (newCust) customerData = newCust;
+        if (newCustArray && newCustArray.length > 0) customerData = newCustArray[0];
       }
 
       if (customerData) {
         setCustomer(customerData);
 
-        // 3. Fetch Wishlist Joined with Artwork & Artist Details
+        // 3. Fetch Wishlist Joined with Artwork & Artist Details (FIXED: artwork_id typo)
         const { data: wishlistData, error: wishError } = await supabase
           .from("wish_list")
           .select(`
             id,
-            artowrk_id,
+            artwork_id,
             artwork (
               art_id,
               title,
@@ -109,7 +110,9 @@ export default function CustomerDashboard() {
           `)
           .eq("customer_id", customerData.customer_id);
 
-        if (!wishError && wishlistData) {
+        if (wishError) {
+          console.error("Error fetching wishlist:", wishError.message || wishError);
+        } else if (wishlistData) {
           setWishlist(wishlistData);
         }
 
@@ -156,7 +159,7 @@ export default function CustomerDashboard() {
     if (!error) {
       setWishlist((prev) => prev.filter((item) => item.id !== wishlistEntryId));
     } else {
-      console.error("Error removing item:", error);
+      console.error("Error removing item:", error.message || error);
     }
   };
 
@@ -399,9 +402,9 @@ export default function CustomerDashboard() {
                     <div className="p-5 space-y-3">
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <h3 className="font-serif font-bold text-base text-slate-900 truncate">{art?.title}</h3>
+                          <h3 className="font-serif font-bold text-base text-slate-900 truncate">{art?.title || "Untitled Artwork"}</h3>
                           <p className="text-xs text-gray-500">
-                            By {art?.artist?.first_name} {art?.artist?.last_name}
+                            By {art?.artist?.first_name || ""} {art?.artist?.last_name || ""}
                           </p>
                         </div>
                         <span className="font-bold text-xs text-purple-600">

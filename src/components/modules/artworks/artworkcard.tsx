@@ -54,34 +54,28 @@ export default function ArtworkCard({ artwork }: ArtworkProps) {
           <h3 className="font-semibold text-gray-900 text-lg line-clamp-1 group-hover:text-purple-600 transition-colors">
             {artwork.title}
           </h3>
-          {artwork.medium?.medium_name && (
-            <span className="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-1 rounded uppercase">
-              {artwork.medium.medium_name}
-            </span>
-          )}
+          <p className="text-xs text-gray-500 truncate">
+            By {artistName}
+          </p>
         </div>
+      </Link>
 
-        <div className="flex items-center gap-1 text-sm text-gray-600">
-          <User size={16} className="text-gray-500" />
-          <span>
-            {artwork.artist?.first_name} {artwork.artist?.last_name}
-          </span>
-        </div>
+      {/* 3. Footer Price & Navigation */}
+      <div className="px-4 pb-4 pt-0 flex items-center justify-between border-t border-gray-50 pt-3">
+        <span className="font-extrabold text-xs text-purple-600">
+          {artwork.price
+            ? `${Number(artwork.price).toLocaleString()} LKR`
+            : "Price on Request"}
+        </span>
 
-        <div className="flex items-center justify-between ">
-        <p className="text-sm font-medium text-blue-600">
-          {artwork.price ? Number(artwork.price).toFixed(2) : "0.00"} LKR
-        </p>
-
-        <div className="flex items-center space-x-1 text-slate-500 hover:text-red-500 transition cursor-pointer">
-           <Heart size={16} className="text-gray-500" />
-          <span>{likeCount}</span>
-
-        </div>
-        </div>
-
-
+        <Link
+          href={`/artworks/${artworkId}`}
+          className="text-[11px] font-bold text-slate-700 hover:text-purple-600 uppercase tracking-wider inline-flex items-center gap-1 transition"
+        >
+          View
+        </Link>
       </div>
+
     </div>
   );
 }
