@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase'; 
 import ArtworkCard from "@/components/modules/artworks/artworkcard";
 import ArtworkFilters from "@/components/modules/artworks/artworkfilter";
+import Link from 'next/link';
 
 export default function ArtworksPage() {
   const [artworks, setArtworks] = useState<any[]>([]);
@@ -72,7 +73,12 @@ export default function ArtworksPage() {
         {artworks?.map((item) => (
           <div key={item.art_id} className="break-inside-avoid p-3">
             {/* Rendered directly without outer <Link> tag wrapper */}
-            <ArtworkCard artwork={item} />
+           
+
+            <Link key={item.art_id} href={`/artworks/${item.art_id}`}>
+          <ArtworkCard key={item.art_id} artwork={item} />
+          </Link>
+
           </div>
         ))}
       </div>
@@ -103,3 +109,7 @@ export default function ArtworksPage() {
     </div>
   );
 }
+
+
+
+
