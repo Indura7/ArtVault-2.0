@@ -13,7 +13,7 @@ export default function ArtworksPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const ITEMS_PER_PAGE = 8;
+  const ITEMS_PER_PAGE = 12;
 
   async function fetchArtworks() {
     setLoading(true);
