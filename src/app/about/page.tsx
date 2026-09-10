@@ -207,9 +207,6 @@ export default function AboutPage() {
                 <p className="text-xs text-purple-100 leading-relaxed mb-8 max-w-lg">
                     Our intelligent notification system ensures you're always connected to the artists and events you love.
                 </p>
-            <button className="px-8 py-3 bg-white text-gray-900 text-xs font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
-                 Join the Community
-            </button>
         </div>
      </section>
 

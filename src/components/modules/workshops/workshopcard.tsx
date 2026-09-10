@@ -8,7 +8,6 @@ interface WorkshopProps {
     title: string;
     description?: string;
     image_url?: string;
-    price?: number;
     date?: string;
     category?: string;
     seats_left?: number;
@@ -86,15 +85,12 @@ export default function WorkshopCard({ workshop }: WorkshopProps) {
             </div>
           )}
 
-          {/* Seats & Price */}
+          {/* Seats  */}
           <div className="flex items-center justify-between pt-1">
             <div className="flex items-center gap-1 text-sm text-gray-600">
               <Users size={16} className="text-gray-500" />
               <span>{workshop.seats_left ?? 0} seats left</span>
             </div>
-            <p className="text-sm font-semibold text-purple-600">
-              {Number(workshop.price ?? 0).toFixed(2)} LKR
-            </p>
           </div>
         </div>
       </div>

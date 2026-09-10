@@ -94,33 +94,59 @@ export default function WorkshopReservationPage({ params }: { params: Promise<{ 
         </p>
       </div>
 
-      {/* Summary Card */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4 shadow-sm h-fit">
-        <img
-          src={workshop?.image_url || 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675'}
-          alt="Workshop"
-          className="w-full h-48 object-cover rounded-xl"
-        />
-        <span className="text-xs font-bold text-purple-600 uppercase tracking-wider">{workshop?.category || 'MASTERCLASS'}</span>
-        <h2 className="text-xl font-bold">{workshop?.title || 'Loading...'}</h2>
-        
-        <div className="text-sm text-gray-600 space-y-1">
-          <p>📅 {workshop?.date || 'November 12 - 14, 2026'}</p>
-          <p>⏰ 10:00 AM – 4:00 PM EST</p>
-          <p>📍 {workshop?.venue || 'ArtVault Virtual Studio (Global)'}</p>
+          {/* Summary Card */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4 shadow-sm h-fit">
+          <img
+            src={workshop?.image_url || 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675'}
+            alt="Workshop"
+            className="w-full h-48 object-cover rounded-xl"
+          />
+          <span className="text-xs font-bold text-purple-600 uppercase tracking-wider">
+            {workshop?.category || 'MASTERCLASS'}
+          </span>
+          <h2 className="text-xl font-bold">{workshop?.title || 'Loading...'}</h2>
+          
+          <div className="text-sm text-gray-600 space-y-2">
+            {/* DATE */}
+            <p className="flex items-center gap-2">
+              📅 {workshop?.date
+                ? new Date(workshop.date).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : 'TBA'}
+            </p>
+
+            {/* TIME */}
+            <p className="flex items-center gap-2">
+              ⏰ {workshop?.time
+                ? workshop.time
+                : workshop?.date && workshop.date.includes('T')
+                ? new Date(workshop.date).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })
+                : '10:00 AM – 4:00 PM'}
+            </p>
+
+            {/* VENUE / LOCATION */}
+            <p className="flex items-center gap-2">
+              📍 {workshop?.venue || workshop?.location || 'ArtVault Virtual Studio'}
+            </p>
+          </div>
+
+          <button
+            onClick={handleReservation}
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white font-bold py-3 rounded-xl transition uppercase tracking-wider text-sm shadow-md cursor-pointer"
+          >
+            CONFIRM RESERVATION
+          </button>
+
+          <p className="text-[10px] text-gray-400 text-center">
+            By confirming this reservation, you agree to our Workshop Terms of Service and Cancellation Policy.
+          </p>
         </div>
-
-        <button
-          onClick={handleReservation}
-          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white font-bold py-3 rounded-xl transition uppercase tracking-wider text-sm shadow-md"
-        >
-          PAY & CONFIRM RESERVATION
-        </button>
-
-        <p className="text-[10px] text-gray-400 text-center">
-          By confirming this reservation, you agree to our Workshop Terms of Service and Cancellation Policy.
-        </p>
-      </div>
     </main>
   );
 }
