@@ -1,3 +1,4 @@
+//sup base connected data base
 'use client';
 import Image from "next/image";   
 import { useState, useEffect,use } from 'react';
@@ -7,6 +8,7 @@ import Link from "next/link";
 import Script from 'next/script';
 
 export default function CheckoutPage({ params }: { params: Promise<{ art_id: string }> }) {
+  //gets the id of the artwork the user selects
   const router = useRouter();
   const resolvedParams = use(params); 
   const art_id = resolvedParams.art_id;
@@ -14,7 +16,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
   const [artwork, setArtwork] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // Form State
+  // storing customer details
   const [buyerName, setBuyerName] = useState('');
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
@@ -60,7 +62,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
    */
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    //order data creation selection
     const orderData = {
       art_id: artwork.art_id,
       customer_id:1,
@@ -84,7 +86,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
       if (error) throw error;
 
       console.log("Database insert successful! Triggering PayHere...", data);
-
+      //getting payhere hash
       const hashResponse = await fetch('/api/payhere-hash', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -118,7 +120,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
 
        
 
-      // @ts-ignore
+      // starting payhere payment
       window.payhere.startPayment(payment);
 
     } catch (error) {
@@ -130,6 +132,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
   /* if (loading) return <div className="p-10 text-center">Loading checkout...</div>;
   if (!artwork) return <div className="p-10 text-center text-red-500">Artwork not found!</div>;
  */
+//payhere script
   return (
     <>
     <Script src="https://www.payhere.lk/lib/payhere.js" strategy="afterInteractive" />
