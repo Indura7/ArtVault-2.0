@@ -121,7 +121,8 @@ export default function CheckoutPage({ params }: { params: Promise<{ art_id: str
        
 
       // starting payhere payment
-      window.payhere.startPayment(payment);
+      // @ts-ignore
+      window.payhere.startPayment(payment) 
 
     } catch (error) {
       console.error("Error saving order:", error);
