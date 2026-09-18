@@ -1,5 +1,4 @@
 
-
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -8,6 +7,7 @@ import Link from "next/link";
 import {Truck} from 'lucide-react';
 import {MessagesSquare } from 'lucide-react';
 import ArtworkCard from "@/components/modules/artworks/artworkcard";
+import Artworkcomment from "@/components/modules/artworks/artworkcomment";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -130,7 +130,11 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
         <p className="text-gray-700">
           {artwork.description || "No description available for this artwork."}
         </p>
+        <Artworkcomment artworkId={artwork.art_id} />
       </div>
+
+
+      
 
       
       {relatedArtworks && relatedArtworks.length > 0 && (
