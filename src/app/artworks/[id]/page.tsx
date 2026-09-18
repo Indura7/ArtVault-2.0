@@ -1,3 +1,5 @@
+
+
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -5,6 +7,7 @@ import Zoom from "@/components/modules/artworks/zoom";
 import Link from "next/link";
 import {Truck} from 'lucide-react';
 import {MessagesSquare } from 'lucide-react';
+import ArtworkCard from "@/components/modules/artworks/artworkcard";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -28,6 +31,30 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
   if (error || !artwork) {
     notFound();
   }
+
+  const { data: relatedArtworks } = await supabase
+    .from("artwork")
+    .select(`*,
+      medium(medium_name),
+      artist (
+        first_name,
+        last_name)
+    `)
+    .eq("artist_id", artwork.artist_id)
+    .neq("art_id", artwork.art_id) // Exclude the current artwork
+    .limit(6);
+
+    const { data: categoryArtworks } = await supabase
+    .from("artwork")
+    .select(`*,
+      medium(medium_name),
+      artist (
+        first_name,
+        last_name)
+    `)
+    .eq("medium_id", artwork.medium_id) // Make sure 'medium_id' matches your DB column name!
+    .neq("art_id", artwork.art_id)
+    .limit(6);
 
   return (
     
@@ -98,12 +125,52 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
       </div>
 
 
-      <div className="border-t pt-6">
+      <div className="pt-6">
         <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Description</h3>
         <p className="text-gray-700">
           {artwork.description || "No description available for this artwork."}
         </p>
       </div>
+
+      
+      {relatedArtworks && relatedArtworks.length > 0 && (
+        <div className="border-t pt-10 mt-10">
+          <h3 className="text-xl font-bold text-gray-900 mb-6">
+            More Works by {artwork.artist?.first_name || "this Artist"}
+          </h3>
+          
+          <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory hide-scrollbar">
+            {relatedArtworks.map((art) => (
+              <div key={art.art_id} className="flex-none w-[280px] snap-start">
+
+                <Link href={`/artworks/${art.art_id}`}>
+                <ArtworkCard artwork={art} />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {categoryArtworks && categoryArtworks.length > 0 && (
+        <div className="border-t pt-10 mt-10">
+          <h3 className="text-xl font-bold text-gray-900 mb-6">
+            More in {artwork.medium?.medium_name || "this Category"}
+          </h3>
+          
+          <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory hide-scrollbar">
+            {categoryArtworks.map((art) => (
+              <div key={art.art_id} className="flex-none w-[280px] snap-start">
+                
+                <Link href={`/artworks/${art.art_id}`}>
+                  <ArtworkCard artwork={art} />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

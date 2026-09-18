@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { User,Heart } from "lucide-react";
 import{useState , useEffect} from "react";
