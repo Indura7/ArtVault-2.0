@@ -259,7 +259,9 @@ export default function ArtistDashboard() {
                     <div className="flex items-center justify-between pt-2 border-t border-gray-50 text-xs text-gray-500">
                       <span className="flex items-center gap-1"><Calendar size={14} className="text-purple-600" /> {art.date_added}</span>
                       <div className="flex gap-2">
-                        <button className="p-1 hover:text-purple-600"><Edit3 size={15} /></button>
+                        <Link href={`/artist-dashboard/edit/${art.art_id}`} className="p-1 hover:text-purple-600">
+                        <Edit3 size={15} />
+                        </Link>
                         <button className="p-1 hover:text-rose-600"><Trash2 size={15} /></button>
                       </div>
                     </div>
