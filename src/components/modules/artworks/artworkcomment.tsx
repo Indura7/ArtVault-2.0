@@ -12,6 +12,7 @@ export default function ArtworkComments({ artworkId }: CommentProps) {
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeUserId, setActiveUserId] = useState<number | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
 
   useEffect(() => {
@@ -20,8 +21,6 @@ export default function ArtworkComments({ artworkId }: CommentProps) {
       
 
       if (user && !authError) {
-        // 2. Look up this user's integer ID in your 'customer' table
-        // Note: Update 'auth_id' to whatever column in your customer table stores the Supabase UUID!
         const { data: customerData, error: dbError } = await supabase
           .from("customer")
           .select("customer_id") // Or whatever your primary key column is named (e.g., customer_id)
@@ -39,6 +38,14 @@ export default function ArtworkComments({ artworkId }: CommentProps) {
     fetchActiveUser();
   }, []);
 
+/*   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return <div className="h-32 bg-gray-50 rounded-lg animate-pulse mt-10"></div>; 
+  }
+ */
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -113,9 +120,7 @@ export default function ArtworkComments({ artworkId }: CommentProps) {
         <button 
           onClick={handlePostComment}
           disabled={!activeUserId || isSubmitting || !newComment.trim()}
-          className="self-end px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition 
-                    disabled:opacity-50 
-                    disabled:cursor-not-allowed"
+          className="self-end px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? "Posting..." : "Post Comment"}
         </button>
