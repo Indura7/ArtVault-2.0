@@ -25,7 +25,7 @@ export default function ArtworkComments({ artworkId }: CommentProps) {
           .from("customer")
           .select("customer_id") // Or whatever your primary key column is named (e.g., customer_id)
           .eq("auth_id", user.id) 
-          .single();
+          .maybeSingle();
 
         if (customerData) {
           setActiveUserId(customerData.customer_id);
@@ -112,7 +112,7 @@ export default function ArtworkComments({ artworkId }: CommentProps) {
         <textarea
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          placeholder={activeUserId ? "What do you think about this piece?" : "Please log in to post a comment."}
+          placeholder={activeUserId ? "What do you think about this piece?" : "Please log-in as a customer to post a comment."}
           className="w-full border rounded-lg p-3 text-gray-700 focus:outline-none focus:border-blue-500"
           rows={3}
           disabled={!activeUserId || isSubmitting}

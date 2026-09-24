@@ -8,10 +8,13 @@ import {Truck} from 'lucide-react';
 import {MessagesSquare } from 'lucide-react';
 import ArtworkCard from "@/components/modules/artworks/artworkcard";
 import Artworkcomment from "@/components/modules/artworks/artworkcomment";
+import BuyNowButton from "@/components/modules/artworks/buynowbtn";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
+const { data: { user } } = await supabase.auth.getUser();
+let isArtist = false;
 
 export default async function ArtworkDetailPage({ params }: PageProps) {
   const { id } = await params;
@@ -32,6 +35,19 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  /* if (user) {
+    const { data: customerProfile } = await supabase
+      .from("customer")
+      .select("auth_id") // Make sure this matches your actual column name
+      .eq("auth_id", user.id)
+      .maybeSingle();
+
+    // 3. Inverse Logic: If they are NOT a customer, they must be an artist!
+    if (!customerProfile) {
+      isArtist = true;
+    }
+  }
+ */
   const { data: relatedArtworks } = await supabase
     .from("artwork")
     .select(`*,
@@ -111,7 +127,14 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
             <h2 className="text-3xl font-extrabold text-blue-600">
               {Number(artwork.price).toLocaleString("en-US", { minimumFractionDigits: 2 })} LKR
             </h2>
-            {artwork.status === 'Sold' ? (
+            {/* {isArtist ? (
+              <button 
+                disabled
+                className="w-full bg-gray-300 text-gray-500 font-bold py-3 rounded-lg cursor-not-allowed uppercase text-center block"
+              >
+                Artists Cannot Purchase
+              </button>
+              ):artwork.status === 'Sold' ? (
                 <button 
                   disabled
                   className="w-full bg-gray-300 text-gray-500 font-bold py-3 rounded-lg cursor-not-allowed uppercase"
@@ -126,7 +149,9 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
                   Buy Now
                 </button>
                 </Link>
-              )}
+              )} */}
+
+              <BuyNowButton artwork={artwork} />
             <p className="flex items-center gap-2 mt-2"><MessagesSquare size={16} className="shrink-0" />Message Artist regarding inquiries.</p>
             
             <p className="flex items-center gap-2 mt-0"><Truck size={16}/>Ships directly from the artist</p>
