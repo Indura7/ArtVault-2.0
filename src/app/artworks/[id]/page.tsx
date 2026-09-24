@@ -111,11 +111,22 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
             <h2 className="text-3xl font-extrabold text-blue-600">
               {Number(artwork.price).toLocaleString("en-US", { minimumFractionDigits: 2 })} LKR
             </h2>
-            <Link href={`/checkout/${artwork.art_id}`}>
-              <button className="w-full py-3 bg-indigo-600 text-white rounded-md font-bold hover:bg-indigo-700 transition cursor-pointer">
-                BUY NOW
-              </button>
-            </Link>
+            {artwork.status === 'Sold' ? (
+                <button 
+                  disabled
+                  className="w-full bg-gray-300 text-gray-500 font-bold py-3 rounded-lg cursor-not-allowed uppercase"
+                >
+                  Sold Out
+                </button>
+              ) : (
+                <Link href={`/checkout/${artwork.art_id}`}>
+                <button 
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition uppercase hover:scale-105 transition-transform duration-300 cursor-pointer"
+                >
+                  Buy Now
+                </button>
+                </Link>
+              )}
             <p className="flex items-center gap-2 mt-2"><MessagesSquare size={16} className="shrink-0" />Message Artist regarding inquiries.</p>
             
             <p className="flex items-center gap-2 mt-0"><Truck size={16}/>Ships directly from the artist</p>
