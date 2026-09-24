@@ -58,7 +58,7 @@ export default function BuyNowButton({ artwork }: { artwork: any }) {
       ) : (
         <Link 
           href={`/checkout/${artwork.art_id}`}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition uppercase text-center block"
+          className="w-full bg-blue-600 hover:bg-blue-700 hover:scale-105 text-white font-bold py-3 rounded-lg transition uppercase text-center block"
         >
           Buy Now
         </Link>

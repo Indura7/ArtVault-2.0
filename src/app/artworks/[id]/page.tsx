@@ -1,6 +1,5 @@
 
 import { supabase } from "@/lib/supabase";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import Zoom from "@/components/modules/artworks/zoom";
 import Link from "next/link";
@@ -9,13 +8,11 @@ import {MessagesSquare } from 'lucide-react';
 import ArtworkCard from "@/components/modules/artworks/artworkcard";
 import Artworkcomment from "@/components/modules/artworks/artworkcomment";
 import BuyNowButton from "@/components/modules/artworks/buynowbtn";
+import LikeCount from "@/components/modules/artworks/wishlist";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
-const { data: { user } } = await supabase.auth.getUser();
-let isArtist = false;
-
 export default async function ArtworkDetailPage({ params }: PageProps) {
   const { id } = await params;
 
@@ -118,9 +115,14 @@ export default async function ArtworkDetailPage({ params }: PageProps) {
             <p className="text-gray-600 mt-1">
               Dimensions : {artwork.width} x {artwork.height} cm
             </p>
-            <span className="inline-block mt-2 px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full uppercase">
+            <p className="inline-block mt-2 px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full uppercase">
               {artwork.medium? `${artwork.medium.medium_name}` : "Unknown Medium"}
-            </span>
+            </p>
+            <p>
+              <LikeCount artworkId={artwork.art_id} />
+            </p>
+            
+            
           </div>
 
           <div className="bg-gray-100 p-6 rounded-lg  space-y-3">

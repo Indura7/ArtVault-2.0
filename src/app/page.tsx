@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Heart, Calendar, User, Bell, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
-import FavoriteButton from "@/components/modules/customer/wishlist";
+import FavoriteButton from "@/components/modules/artworks/wishlist";
 
 // --- MAIN HOME PAGE COMPONENT ---
 export default function Home() {
