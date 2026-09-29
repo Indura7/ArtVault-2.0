@@ -301,6 +301,17 @@ export default function Home() {
           <button className="px-8 py-3 bg-white text-gray-900 text-xs font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
             Join the Community
           </button>
+
+          <button 
+            onClick={async () => {
+              const res = await fetch('/api/email', { method: 'POST' });
+              const data = await res.json();
+              alert(data.message || data.error);
+            }}
+            className="bg-purple-600 text-white p-3 rounded-lg font-bold mt-4"
+          >
+            Send Test Email 🚀
+          </button>
         </div>
       </section>
     </div>
