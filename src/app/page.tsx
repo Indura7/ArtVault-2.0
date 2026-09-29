@@ -8,6 +8,7 @@ import { Heart, Calendar, User, Bell, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 import FavoriteButton from "@/components/modules/artworks/wishlist";
+import NewsletterSignup from "@/components/modules/subscribe/subscribe";
 
 // --- MAIN HOME PAGE COMPONENT ---
 export default function Home() {
@@ -298,11 +299,11 @@ export default function Home() {
           <p className="text-xs text-purple-100 leading-relaxed mb-8 max-w-lg">
             Our intelligent notification system ensures you're always connected to the artists and events you love.
           </p>
-          <button className="px-8 py-3 bg-white text-gray-900 text-xs font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
-            Join the Community
-          </button>
+         
 
-          <button 
+          <NewsletterSignup />
+
+          {/* <button 
             onClick={async () => {
               const res = await fetch('/api/email', { method: 'POST' });
               const data = await res.json();
@@ -311,7 +312,7 @@ export default function Home() {
             className="bg-purple-600 text-white p-3 rounded-lg font-bold mt-4"
           >
             Send Test Email 🚀
-          </button>
+          </button> */}
         </div>
       </section>
     </div>

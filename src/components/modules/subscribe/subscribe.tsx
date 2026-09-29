@@ -51,9 +51,9 @@ export default function NewsletterSignup() {
         <button
           type="submit"
           disabled={status === "loading" || status === "success"}
-          className={`px-6 py-2 rounded-full font-bold text-white transition ${
+          className={`px-6 py-2 rounded-full font-bold text-white transition border border-transparent ${
             status === "success" 
-              ? "bg-green-500" 
+              ? "bg-white-500" 
               : "bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400"
           }`}
         >

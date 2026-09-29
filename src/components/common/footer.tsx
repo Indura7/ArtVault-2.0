@@ -31,8 +31,7 @@ export function Footer() {
               Empowering creators to share their vision with the world through a secure, curated digital gallery experience.
             </p>
             
-            {/* Stay Inspired Section */}
-            <div className="mt-2 flex flex-col gap-2">
+           {/*  <div className="mt-2 flex flex-col gap-2">
               <h6 className="text-xs font-black uppercase tracking-widest text-slate-900">Stay Inspired</h6>
               <div className="flex flex-col sm:flex-row gap-2 max-w-md">
                 <input 
@@ -44,7 +43,7 @@ export function Footer() {
                   Subscribe
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* COLUMN 2: QUICK LINKS (Center-Left) */}
