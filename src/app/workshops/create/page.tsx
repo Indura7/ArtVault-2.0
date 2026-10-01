@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
@@ -8,7 +8,6 @@ export default function CreateWorkshopPage() {
   const router = useRouter();
 
   // Form State
-  const [selectedArtist, setSelectedArtist] = useState("");
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [price, setPrice] = useState('');
@@ -22,28 +21,6 @@ export default function CreateWorkshopPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fetch current logged-in artist's ID
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (user) {
-        const { data: artistRecord, error } = await supabase
-          .from("artist")
-          .select("artist_id")
-          .eq("auth_id", user.id)
-          .maybeSingle();
-
-        if (artistRecord) {
-          setSelectedArtist(artistRecord.artist_id);
-        } else if (error) {
-          console.error("Error fetching artist record:", error.message);
-        }
-      }
-    };
-    fetchCurrentUser();
-  }, []);
-
   // File Selection Handler
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -56,11 +33,6 @@ export default function CreateWorkshopPage() {
   // Submit Handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedArtist) {
-      alert("Please wait or make sure you are logged in as an artist!");
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
@@ -82,7 +54,7 @@ export default function CreateWorkshopPage() {
         }
       }
 
-      // 2. Insert Record into Supabase `workshop` Table with 'Pending' status
+      // 2. Insert Record into Supabase `workshop` Table
       const { error } = await supabase.from('workshop').insert([
         {
           title,
@@ -93,8 +65,8 @@ export default function CreateWorkshopPage() {
           time,
           duration,
           image_url: imageUrl,
-          status: 'Pending', // 👈 Ensures the workshop is set as Pending for admin review
-          artist_id: selectedArtist, // 👈 Uses the actual logged-in artist's ID
+          status: 'Pending',
+          artist_id: 1,
         },
       ]);
 
@@ -105,7 +77,7 @@ export default function CreateWorkshopPage() {
 
     } catch (err: any) {
       console.error('Error creating workshop:', err.message);
-      alert(`Failed to submit workshop: ${err.message}`);
+      alert('Failed to submit workshop. Please check inputs and try again.');
     } finally {
       setIsSubmitting(false);
     }
