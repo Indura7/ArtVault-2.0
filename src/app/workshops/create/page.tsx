@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
@@ -28,7 +28,7 @@ export default function CreateWorkshopPage() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (user) {
-        const { data: artistRecord } = await supabase
+        const { data: artistRecord, error } = await supabase
           .from("artist")
           .select("artist_id")
           .eq("auth_id", user.id)
@@ -36,6 +36,8 @@ export default function CreateWorkshopPage() {
 
         if (artistRecord) {
           setSelectedArtist(artistRecord.artist_id);
+        } else if (error) {
+          console.error("Error fetching artist record:", error.message);
         }
       }
     };
@@ -54,7 +56,10 @@ export default function CreateWorkshopPage() {
   // Submit Handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedArtist) return alert("Please make sure you are logged in as an artist!");
+    if (!selectedArtist) {
+      alert("Please wait or make sure you are logged in as an artist!");
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -100,7 +105,7 @@ export default function CreateWorkshopPage() {
 
     } catch (err: any) {
       console.error('Error creating workshop:', err.message);
-      alert('Failed to submit workshop. Please check inputs and try again.');
+      alert(`Failed to submit workshop: ${err.message}`);
     } finally {
       setIsSubmitting(false);
     }
