@@ -75,17 +75,18 @@ export default function UploadArtworkPage() {
       const { data: urlData } = supabase.storage.from("artworks").getPublicUrl(fileName);
 
       // 2. Insert into Supabase Database ('artwork')
+      // 2. Insert into Supabase Database ('artwork')
       const { error: dbError } = await supabase.from("artwork").insert([
         {
           title,
           medium_id: medium,
           width: parseFloat(width),
           height: parseFloat(height),
-          
           description,
           price: parseFloat(price),
           image_path: urlData.publicUrl,
-          artist_id: selectedArtist, 
+          artist_id: selectedArtist,
+          status: "Pending", 
         },
       ]);
 
