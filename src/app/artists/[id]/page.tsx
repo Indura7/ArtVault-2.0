@@ -58,6 +58,7 @@ export default function IndividualArtistDetailPage(props: PageProps) {
   const [copiedLink, setCopiedLink] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -70,9 +71,6 @@ export default function IndividualArtistDetailPage(props: PageProps) {
       try {
         let dbArtist: any = null;
 
-        // --- Step 1: numeric id lookup, split into two SEPARATE queries ---
-        // Combining `id.eq.X,artist_id.eq.X` in one .or() breaks silently
-        // if either column's type doesn't accept the value (e.g. uuid vs int).
         if (isNumeric) {
           const { data: byId, error: byIdErr } = await supabase
             .from('artist')
@@ -92,8 +90,6 @@ export default function IndividualArtistDetailPage(props: PageProps) {
             dbArtist = byArtistId;
           }
         } else {
-          // Non-numeric slug: try matching id as text too, in case ids are
-          // stored as strings/uuids rather than numbers.
           const { data: byIdText, error: byIdTextErr } = await supabase
             .from('artist')
             .select('*')
@@ -103,7 +99,6 @@ export default function IndividualArtistDetailPage(props: PageProps) {
           dbArtist = byIdText;
         }
 
-        // --- Step 2: fall back to username / display_name / full_name text match ---
         if (!dbArtist) {
           const nameGuess = rawHandleOrName.replace(/[-_]/g, ' ');
           const { data: textData, error: textErr } = await supabase
@@ -124,9 +119,8 @@ export default function IndividualArtistDetailPage(props: PageProps) {
           return;
         }
 
-        const targetId = dbArtist.id ?? dbArtist.artist_id ?? cleanSlug;
+        const targetId = dbArtist.artist_id ?? dbArtist.id ?? cleanSlug;
 
-        // --- Step 3: fetch artworks, retrying with a string-cast id if empty ---
         let dbArtworks: any[] = [];
         {
           const { data, error } = await supabase
@@ -170,7 +164,7 @@ export default function IndividualArtistDetailPage(props: PageProps) {
         }));
 
         setArtist({
-          id: String(targetId),
+          id: targetId,
           name: fullName,
           handle: dbArtist.username ? `@${dbArtist.username.replace(/^@/, '')}` : `@${rawHandleOrName}`,
           image:
@@ -186,6 +180,30 @@ export default function IndividualArtistDetailPage(props: PageProps) {
           location: dbArtist.location || 'Global Studio',
           artworks: formattedArtworks,
         });
+
+        // --- Check Initial Follow Status ---
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: customerData } = await supabase
+            .from('customer')
+            .select('customer_id')
+            .eq('auth_id', user.id)
+            .maybeSingle();
+
+          if (customerData) {
+            const { data: followRecord } = await supabase
+              .from('follower')
+              .select('*')
+              .eq('customer_id', customerData.customer_id)
+              .eq('artist_id', targetId)
+              .maybeSingle();
+
+            if (followRecord) {
+              setIsFollowing(true);
+            }
+          }
+        }
+
       } catch (err) {
         console.error('Error loading artist details:', err);
       } finally {
@@ -199,6 +217,64 @@ export default function IndividualArtistDetailPage(props: PageProps) {
       isMounted = false;
     };
   }, [cleanSlug, rawHandleOrName, isNumeric]);
+
+  // --- Handle Follow / Unfollow Toggle ---
+  const handleFollowToggle = async () => {
+    if (isToggling) return;
+    setIsToggling(true);
+
+    try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        alert('Please log in as a customer to follow artists.');
+        return;
+      }
+
+      const { data: customerData, error: customerError } = await supabase
+        .from('customer')
+        .select('customer_id')
+        .eq('auth_id', user.id)
+        .maybeSingle();
+
+      if (customerError || !customerData) {
+        alert('Customer profile not found for this account.');
+        return;
+      }
+
+      const currentCustomerId = customerData.customer_id;
+      const targetArtistId = artist.id;
+
+      if (isFollowing) {
+        // Unfollow (Delete)
+        const { error: deleteError } = await supabase
+          .from('follower')
+          .delete()
+          .eq('customer_id', currentCustomerId)
+          .eq('artist_id', targetArtistId);
+
+        if (deleteError) throw deleteError;
+        setIsFollowing(false);
+      } else {
+        // Follow (Insert)
+        const { error: insertError } = await supabase
+          .from('follower')
+          .insert([
+            {
+              customer_id: currentCustomerId,
+              artist_id: targetArtistId,
+            },
+          ]);
+
+        if (insertError) throw insertError;
+        setIsFollowing(true);
+      }
+    } catch (err: any) {
+      console.error('Error toggling follow:', err);
+      alert(`Action failed: ${err.message}`);
+    } finally {
+      setIsToggling(false);
+    }
+  };
 
   const handleShare = () => {
     if (typeof window !== 'undefined') {
@@ -273,13 +349,15 @@ export default function IndividualArtistDetailPage(props: PageProps) {
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto">
+              {/* Follow Button */}
               <button
-                onClick={() => setIsFollowing(!isFollowing)}
+                onClick={handleFollowToggle}
+                disabled={isToggling || isLoading}
                 className={`flex-1 sm:flex-none px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 ${
                   isFollowing
                     ? 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
                     : 'bg-blue-600 hover:bg-blue-700 text-white shadow-xs'
-                }`}
+                } ${isToggling ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
                 <span>{isFollowing ? 'Following' : 'Follow'}</span>
