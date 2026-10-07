@@ -3,8 +3,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UserPlus, UserCheck, ArrowRight } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export interface Artist {
   id?: string | number;
@@ -37,6 +38,58 @@ export interface ArtistCardProps {
 export default function ArtistCard({ artist, onSelect }: ArtistCardProps) {
   const router = useRouter();
   const [isFollowing, setIsFollowing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Get the true artist ID (supports artist_id or id)
+  const artistId = 
+    artist.artist_id !== undefined && artist.artist_id !== null 
+      ? artist.artist_id 
+      : artist.id !== undefined && artist.id !== null && artist.id !== '' 
+      ? Number(artist.id) || artist.id 
+      : undefined;
+
+  // Check initial follow status when component mounts
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkFollowStatus() {
+      if (!artistId) return;
+
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        // Get customer record corresponding to the auth user
+        const { data: customerData } = await supabase
+          .from('customer')
+          .select('customer_id')
+          .eq('auth_id', user.id)
+          .maybeSingle();
+
+        if (!customerData) return;
+
+        // Check if follow record exists in the database
+        const { data: followRecord } = await supabase
+          .from('follower')
+          .select('*')
+          .eq('customer_id', customerData.customer_id)
+          .eq('artist_id', artistId)
+          .maybeSingle();
+
+        if (isMounted && followRecord) {
+          setIsFollowing(true);
+        }
+      } catch (err) {
+        console.error('Error checking follow status:', err);
+      }
+    }
+
+    checkFollowStatus();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [artistId]);
 
   // Guard: never crash if a bad/undefined entry slips into the list
   if (!artist) {
@@ -87,9 +140,6 @@ export default function ArtistCard({ artist, onSelect }: ArtistCardProps) {
       ? artist.artwork_count
       : 12;
 
-  // Only use a REAL identifier for the profile link. Never fabricate one
-  // (like a slugified name or an array-index-based id) — those can never
-  // match a database row and will always dead-end on the detail page.
   const realId =
     artist.id !== undefined && artist.id !== ''
       ? artist.id
@@ -104,17 +154,76 @@ export default function ArtistCard({ artist, onSelect }: ArtistCardProps) {
     : undefined;
 
   const slugOrId = realId ?? usernameSlug;
-
   const profileUrl = slugOrId ? `/artists/${encodeURIComponent(String(slugOrId))}` : null;
 
-  if (!profileUrl) {
-    console.warn('[ArtistCard] artist has no id/artist_id/username, cannot build profile link:', artist);
-  }
-
-  const handleFollowToggle = (e: React.MouseEvent) => {
+  // Handle Follow / Unfollow Toggle with Supabase
+  const handleFollowToggle = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsFollowing((prev) => !prev);
+
+    if (!artistId) {
+      alert('Invalid artist identifier.');
+      return;
+    }
+
+    if (loading) return;
+    setLoading(true);
+
+    try {
+      // 1. Check if user is logged in
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        alert('Please log in as a customer to follow artists.');
+        router.push('/login');
+        return;
+      }
+
+      // 2. Fetch customer_id linked to the logged-in user
+      const { data: customerData, error: customerError } = await supabase
+        .from('customer')
+        .select('customer_id')
+        .eq('auth_id', user.id)
+        .maybeSingle();
+
+      if (customerError || !customerData) {
+        alert('Customer profile not found for this account.');
+        return;
+      }
+
+      const currentCustomerId = customerData.customer_id;
+
+      if (isFollowing) {
+        // --- UNFOLLOW (Delete from follower table) ---
+        const { error: deleteError } = await supabase
+          .from('follower')
+          .delete()
+          .eq('customer_id', currentCustomerId)
+          .eq('artist_id', artistId);
+
+        if (deleteError) throw deleteError;
+
+        setIsFollowing(false);
+      } else {
+        // --- FOLLOW (Insert into follower table) ---
+        const { error: insertError } = await supabase
+          .from('follower')
+          .insert([
+            {
+              customer_id: currentCustomerId,
+              artist_id: artistId,
+            },
+          ]);
+
+        if (insertError) throw insertError;
+
+        setIsFollowing(true);
+      }
+    } catch (err: any) {
+      console.error('Error toggling follow state:', err);
+      alert(`Action failed: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCardClick = () => {
@@ -175,13 +284,14 @@ export default function ArtistCard({ artist, onSelect }: ArtistCardProps) {
             {/* Follow Button */}
             <button
               onClick={handleFollowToggle}
+              disabled={loading}
               title={isFollowing ? 'Following' : 'Follow Artist'}
               aria-label={`Follow ${rawName}`}
               className={`p-2 rounded-xl border transition-all duration-200 flex items-center justify-center shrink-0 ${
                 isFollowing
                   ? 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 shadow-xs'
                   : 'bg-white text-slate-500 border-slate-200 hover:text-blue-600 hover:border-blue-300 hover:bg-slate-50 shadow-2xs'
-              }`}
+              } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
             </button>
