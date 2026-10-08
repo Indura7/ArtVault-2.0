@@ -3,7 +3,6 @@ import nodemailer from 'nodemailer';
 
 export async function POST(request: Request) {
   try {
-    // 1. Connect to the Gmail SMTP Server
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -12,10 +11,9 @@ export async function POST(request: Request) {
       },
     });
 
-    // 2. Configure the email details
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: 'black4allu@gmail.com', // 👈 Change this to your actual email
+      to: 'black4allu@gmail.com', 
       subject: '🎨 Art Vault System: Webhook Test',
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
@@ -26,7 +24,7 @@ export async function POST(request: Request) {
       `,
     };
 
-    // 3. Send the email
+    
     await transporter.sendMail(mailOptions);
 
     return NextResponse.json({ message: 'Email sent successfully!' }, { status: 200 });

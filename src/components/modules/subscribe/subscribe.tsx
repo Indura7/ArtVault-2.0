@@ -11,11 +11,9 @@ export default function NewsletterSignup() {
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Basic validation
     if (!email) return;
     setStatus("loading");
 
-    // Insert into Supabase
     const { error } = await supabase
       .from("subscribers")
       .insert([{ email: email }]);
@@ -24,15 +22,15 @@ export default function NewsletterSignup() {
       // 23505 is the PostgreSQL error code for a unique constraint violation
       if (error.code === '23505') {
         setStatus("error");
-        setMessage("You are already subscribed! 🎉");
+        setMessage("You are already subscribed! ");
       } else {
         setStatus("error");
         setMessage("Something went wrong. Try again.");
       }
     } else {
       setStatus("success");
-      setMessage("Thanks for subscribing! 🚀");
-      setEmail(""); // Clear the input
+      setMessage("Thanks for subscribing! ");
+      setEmail("");
     }
   };
 
